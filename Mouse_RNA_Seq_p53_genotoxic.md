@@ -82,58 +82,9 @@ The results from downloading with **--split-files** gives 2 files per SRR, as me
 
 ### FastQC
 
-FastQC can be run over all of the **\.fastq.gz** files by using the * wildcard. This prevents the need to hard code each individual read file, which is nice because there are 24 (12 forward and 12 reverse).
+FastQC can be run on all of the read files by using the wild card (\*) as in **\*.fastq.gz**. This prevents the need to hard code each individual read file into a FastQC command, which saves a lot of time since there are 24 read files in total for these 12 samples.
 
 
 ```bash
 ~/miniconda2/bin/fastqc *.fastq.gz
 ```
-
-
-
-
-xczvz
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
