@@ -88,3 +88,29 @@ FastQC can be run on all of the read files by using the wild card (\*) as in **\
 ```bash
 ~/miniconda2/bin/fastqc *.fastq.gz
 ```
+
+The output from running FastQC is a zipped folder and an HTML file for each of the **\fastq.gz** files in the folder. The HTML document looks something like this:
+
+![FastQC of Raw SRR2121770_1.fastq.gz Read](./TopFastQCRaw.PNG)
+
+This is just the top of the file, and every category under the **Summary** heading has a graph that shows how the read quality looks for that particular metric. These reports can give insight into whether the reads are of decent quality or if the quality is poor. 
+
+The raw reads we have here all passed for adapter content and sequence length distribution and everything failed per base sequence content. SRR2121770, SRR2121771, SRR2121774, SRR2121775, SRR2121788, SRR2121781-2, and SRR2121789-1 were fairly decent quality reads. SRR2121778, SRR2121779, SRR2121780, SRR2121786, SRR2121787, SRR2121781-1, and SRR2121789-2 were of fairly lower quality (failing 3 or more in both reads. All of them failed both per base sequence quality and per tile sequence quality. 
+
+### Trimming with Trimmomatic
+
+Conda was used again to run Trimmomatic. This isn't as easy as using the wildcard like with FastQC because each output has to be personalized for the read files that are input into Trimmomatic. Also, we have to make sure that the adapter sequences are in the same folder that we are running so we can refer to them easily when calling the Trimmomatic program. In this case, we are using the TruSeq3-PE-2.fa adapter sequences For example:
+
+
+```bash
+~/miniconda2/bin/trimmomatic PE SRR2121770_1.fastq.gz SRR2121770_2.fastq.gz 770_fp.fq.gz 770_fu.fq.gz 770_rp.fq.gz 770_ru.fq.gz ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:2keepBothReads LEADING:3 TRALING:3 MINLEN:36 &
+```
+
+This would be repeated for each of the pairs (12 in total). We are trimming paired-end reads with the TruSeq3-PE-2 adapters. We are chopping off the first and last 3 bases and if we end up with a sequence less than 36 bases, we get rid of it. We want to make sure that there are enough bases in a read to work with. These parameters can be tweaked for possibly better end results with less being discarded. When Trimmomatic is finished running, it will out put the total number of reads, the total number from both the forward and reverse reads that are kept, the number of only forward reads kept, the number of only reverse reads kept, and the number of discarded reads.
+
+The highest number of reads dropped was from trimming SRR2121786, where 20.55% dropped. Most reads were between 5% and 10% dropped. SRR2121786, SRR2121787, and SRR2121779 had sequence drops greater than 15%.
+
+The trimmed reads can be analyzed again with FastQC to see how well the trimming worked to make the file better quality. After running FastQC on the trimmed files we see that the quality of those that were really bad quality were improved. There were a few different metrics throughout all of the files that bounced from a warning before the failing, or from passing before to a warning, and so forth, overall creating better quality read files.
+
+
+
