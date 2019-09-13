@@ -73,6 +73,7 @@ This is different than previous RNA-Seq analyses where I used my workstation pc 
 + Trimmomatic 0.39
 + Bowtie 2.2.5.0
 
+<<<<<<< HEAD
 ### Picking the right node
 
 To find a node that we can use on our own, we need to see which nodes are already allocated to jobs and which ones are idle. To do this, we can run **sinfo**. We want to pick one of the nodes that are marked 'idle' so we get the whole thing and we aren't interrupting someone elses job. For the sake of this exercise, lets work on **big-mem**.
@@ -91,6 +92,8 @@ module use /cm/shared/modulefiles_local/
 ```
 
 After loading the modules you can use it just as you would any other command line.
+=======
+>>>>>>> a4dae64cce1be153dac7c48fdb6b6041e7c49bd8
 
 ### Acquiring sequences
 
@@ -182,7 +185,13 @@ This process took about 26 minutes to run. Now lets copy the index files to a fo
 ~/miniconda2/bin/tophat --no-converage-search -p 20 -G Mus_musculus/NCBI/build37.2/Annotation/Archives/archive-2015-07-17-14-32-40/Genes/genes.gtf -0 770_thout ./Index/genome 770_fp.fq.gz 770_rp.fq.gz 770_fu.fq 770_ru.fq
 ```
 
+<<<<<<< HEAD
 This run took almost 3 hours to complete.. Running with 80 cores rather than 20 cores took just 4 minutes less, so the whole process must be limited by a single core and the core clock speed. The process does use close to 8,000% at its peak so there is a benefit to multicore, just isn't very scalable.
+=======
+This run took almost 3 hours to complete.. Running with 80 cores rather than 20 cores took 
+
+--partition bigmem
+>>>>>>> a4dae64cce1be153dac7c48fdb6b6041e7c49bd8
 
 
 
