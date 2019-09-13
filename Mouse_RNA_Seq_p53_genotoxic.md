@@ -15,6 +15,19 @@ For STAT736-Fall-2019, we are analyzing the RNA-Seq from the publication [Genome
 
 The mice were exposed to whole-body ionizing radiation and sequences were extracted from both Bcells and non-B cells from the spleens of the mice. Two genotypes of mice were used: mice with p53 knocked out and the wild-type C57/Bl6. There were 4 different group combinations including the 2 different genotypes; each genotype was subjected to the ionizing radiation as well as control/mock.
 
+
+```
+## Warning: package 'knitr' was built under R version 3.5.3
+```
+
+```
+## Warning: package 'kableExtra' was built under R version 3.5.3
+```
+
+```
+## Warning: package 'reticulate' was built under R version 3.5.3
+```
+
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>Treatment groups of the mice that were either controls or treated with ionizing radiation to determine reaction of p53.</caption>
  <thead>
@@ -53,6 +66,13 @@ The pipeline used in this analysis used **conda** on South Dakota State Universi
 This is different than previous RNA-Seq analyses where I used my workstation pc with **Ubuntu 18.04** to run **FastQC**, **Trimmomatic**, **HiSat2**, **HTSeq**, and **DESeq2** locally. Also, the previous RNA-Seq alayses were of Soybean with treatment combinations of mycorrhizae and rhizobia inoculation.
 
 ## Analysis
+
+### Programs used?
+
++ FastQC
++ Trimmomatic 0.39
++ Bowtie 2.2.5.0
+
 
 ### Acquiring sequences
 
@@ -111,6 +131,64 @@ This would be repeated for each of the pairs (12 in total). We are trimming pair
 The highest number of reads dropped was from trimming SRR2121786, where 20.55% dropped. Most reads were between 5% and 10% dropped. SRR2121786, SRR2121787, and SRR2121779 had sequence drops greater than 15%.
 
 The trimmed reads can be analyzed again with FastQC to see how well the trimming worked to make the file better quality. After running FastQC on the trimmed files we see that the quality of those that were really bad quality were improved. There were a few different metrics throughout all of the files that bounced from a warning before the failing, or from passing before to a warning, and so forth, overall creating better quality read files.
+
+### Alignment using Tophat
+
+Tophat can be installed using the same **conda install** (***conda install \-c bioconda tophat***). When this is finished installing, then we will need to get the mouse genome from the [Johns Hopkins Univeristy Center for computational BIology](http://ccb.jhu.edu/software/tophat/igenomes.shtml). The version of the mouse genome that I am using here is the [NCBI build37.2](ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Mus_musculus/NCBI/build37.2/Mus_musculus_NCBI_build37.2.tar.gz). Instead of downloading this from the website and having to move it to the cluser, I will just download it using wget into the folder that has the raw reads, trimmed reads, and the FastQC files.
+
+
+```bash
+wget ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Mus_musculus/NCBI/build37.2/Mus_musculus_NCBI_build37.2.tar.gz
+```
+
+This will take a long time to download because the file is a little less than 16GB zipped.
+
+We notice here that we have a zipped tar file. To make this file easier to use, lets unzip it.
+
+
+```bash
+tar zxvf Mus_muculus_NCBI_build37.2.tar.gz
+```
+
+Since Tophat is requiring **\*.bt21** files (large index) and the files downloaded for the genome above are only small index files, we have to create a large index using **bowtie2-build**. For this, lets navigate to the WholeGenomeFasta folder within the extracted folder and then run **bowtie2-build**.
+
+
+```bash
+~/miniconda2/bin/bowtie2-build --large-index genome.fa genome
+```
+
+This process took about 26 minutes to run. Now lets copy the index files to a folder close to our reads so we can access them easier, rather than having to refer to the longer path where we build them. After they are copied to a new folder closer to our working directory, I went ahead and unzipped the trimmed read files to try and make the Tophat faster but it turned out not to work. The multicore call with **\-p** didn't use more cores than 1 until **bowtie2-align-s**, then 20 cores were used.
+
+
+```bash
+~/miniconda2/bin/tophat --no-converage-search -p 20 -G Mus_musculus/NCBI/build37.2/Annotation/Archives/archive-2015-07-17-14-32-40/Genes/genes.gtf -0 770_thout ./Index/genome 770_fp.fq.gz 770_rp.fq.gz 770_fu.fq 770_ru.fq
+```
+
+This run took almost 3 hours to complete.. Running with 80 cores rather than 20 cores took 
+
+--partition bigmem
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
