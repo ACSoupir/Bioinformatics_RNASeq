@@ -9,7 +9,7 @@ output:
 
 
 
-# Background
+# **Background**
 
 For STAT736-Fall-2019, we are analyzing the RNA-Seq from the publication [Genome-wide analysis of p53 transcriptional programs in B cells upon exposure to genotoxic stress in vivo.](https://www.ncbi.nlm.nih.gov/pubmed/26372730?dopt=Abstract) We are only using the [sequences](https://trace.ncbi.nlm.nih.gov/Traces/study/?acc=SRP061386) *B cells from spleen* and not the *non-B cells from spleen* from the SRA Run Selector on NCBI.
 
@@ -52,7 +52,7 @@ The pipeline used in this analysis used **conda** on South Dakota State Universi
 
 This is different than previous RNA-Seq analyses where I used my workstation pc with **Ubuntu 18.04** to run **FastQC**, **Trimmomatic**, **HiSat2**, **HTSeq**, and **DESeq2** locally. Also, the previous RNA-Seq alayses were of Soybean with treatment combinations of mycorrhizae and rhizobia inoculation.
 
-# Analysis
+# **Analysis**
 
 ## Programs used?
 
@@ -61,8 +61,9 @@ This is different than previous RNA-Seq analyses where I used my workstation pc 
 + Bowtie 2.2.5.0
 + Tophat 2.1.1
 + STAR
++ Cufflinks
 
-## Picking the right node
+### Picking the right node
 
 To find a node that we can use on our own, we need to see which nodes are already allocated to jobs and which ones are idle. To do this, we can run **sinfo**. We want to pick one of the nodes that are marked 'idle' so we get the whole thing and we aren't interrupting someone elses job. For the sake of this exercise, lets work on **big-mem**.
 
@@ -80,6 +81,42 @@ module use /cm/shared/modulefiles_local/
 ```
 
 After loading the modules you can use it just as you would any other command line.
+
+### Creating slurm scripts
+
+When running on a cluster, it can sometime be difficult to find open nodes with the resources needed to run the jobs that we have. Making a slurm script is really easy. Fist we make a new file with the *touch* command.
+
+
+```bash
+touch commands.slurm
+```
+
+Now in our directory we have the file **commands.slurm** which we can edit to hold our code in. We can edit it with the *vi* command.
+
+
+```bash
+vi commands.slurm
+```
+
+We have a few things that we need to put in the file header so slurm knows what to do with our commands.
+
+
+```bash
+#!/bin/bash
+
+#SBATCH --job-name=example
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=10
+#SBATCH --output=job-%j-%N.log
+#SBATCH --partition=bigmem
+#SBATCH --time=10:00:00
+```
+
+When we break this down, we see *--job-name* which is what we will see when we look at whats running later, *--nodes* is the number of nodes we have, *--ntasks-per-node* is the number of cores that we are requesting to have allocated, *--output* is the output log file of the job (here it names the output file with the job number and the node that we used), *--partition* here is requesting a big-mem node but **compute** can also be used, and finally *--time* is how long we are requesting the allocation for. 
+
+If the time runs out before the job is done I believe that it just kills the job even if not finished so we need to think a little about how much time to set. If the time is set too low, the job is killed and if the time is set too long, we may face issues with getting the node allocated to us.
+
+To submit a job we can use *sbatch commands.slurm* and then we have the job ID. To check the status of our submission we use *sbatch* and then it shows all of the submitted jobs and how long they have been running along with the name that we set in the script.
 
 ## Acquiring sequences
 
@@ -177,7 +214,7 @@ This run took almost 3 hours to complete.. Running with 80 cores rather than 20 
 
 ### Using STAR
 
-STAR can be installed the same way as the previous programs with **conda install** (***conda install \-c bioconda star***). In order to run STAR, we need to creaate indices just like with tophat, but STAR has this built in. I'm going to be using the same genome and GTF file as previously downloaded, but Dr. Ge usesa different zipped genome from the *gencode* database.
+STAR can be installed the same way as the previous programs with **conda install** (***conda install \-c bioconda star***). In order to run STAR, we need to creaate indices just like with tophat, but STAR has this built in. I'm going to be using the same genome and GTF file as previously downloaded, but Dr. Ge uses a different zipped genome from the *gencode* database.
 
 
 ```bash
@@ -189,19 +226,22 @@ STAR can be installed the same way as the previous programs with **conda install
 --sjdbGTFfile Mus_musculus/NCBI/build37.2/Annotation/Archives/archive-2015-07-17-14-32-40/Genes/genes.gtf
 ```
 
-With the index files made, we can start aligning with STAR.
+With the index files made, we can start aligning with STAR. It's important here than we only pick the paired end reads and not use all of the reads. Tophat is able to use all 4 reads but STAR doesn't allow that, so we need to make sure that we feed in the large files from trimming.
 
 
 ```bash
-~/miniconda2/bin/STAR \
---runThreadN 80 \
---genomeDir genomeIndex \
---readFilesIn 770_* \
---outFilterIntronMotifs RemoveNoncanonical \
---outFileNamePrefix 2121770 \
---outSamtype BAM SortedByCoordinate
-
+~/miniconda2/bin/STAR --runThreadN 80 --genomeDir starIndex --readFilesIn 770_fp.fq 770_rp.fq --outFilterIntronMotifs RemoveNoncanonical --outFileNamePrefix 2121770 --outSAMtype BAM SortedByCoordinate
 ```
+
+## Assembling transcripts with Cufflinks
+
+Once STAR is done running, we can assemble the transcripts with Cufflinks. This can also be installed with **conda install** (***conda install \-c bioconda cufflinks***).
+
+
+```bash
+~/miniconda2/bin/cufflinks -p 20 -o SRR2121771_clout --library-type fr-firststrand 2121770Aligned.sortedByCoord.out.bam
+```
+
 
 
 
