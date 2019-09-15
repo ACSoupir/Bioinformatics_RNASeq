@@ -9,24 +9,11 @@ output:
 
 
 
-## Background
+# Background
 
 For STAT736-Fall-2019, we are analyzing the RNA-Seq from the publication [Genome-wide analysis of p53 transcriptional programs in B cells upon exposure to genotoxic stress in vivo.](https://www.ncbi.nlm.nih.gov/pubmed/26372730?dopt=Abstract) We are only using the [sequences](https://trace.ncbi.nlm.nih.gov/Traces/study/?acc=SRP061386) *B cells from spleen* and not the *non-B cells from spleen* from the SRA Run Selector on NCBI.
 
 The mice were exposed to whole-body ionizing radiation and sequences were extracted from both Bcells and non-B cells from the spleens of the mice. Two genotypes of mice were used: mice with p53 knocked out and the wild-type C57/Bl6. There were 4 different group combinations including the 2 different genotypes; each genotype was subjected to the ionizing radiation as well as control/mock.
-
-
-```
-## Warning: package 'knitr' was built under R version 3.5.3
-```
-
-```
-## Warning: package 'kableExtra' was built under R version 3.5.3
-```
-
-```
-## Warning: package 'reticulate' was built under R version 3.5.3
-```
 
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>Treatment groups of the mice that were either controls or treated with ionizing radiation to determine reaction of p53.</caption>
@@ -65,15 +52,17 @@ The pipeline used in this analysis used **conda** on South Dakota State Universi
 
 This is different than previous RNA-Seq analyses where I used my workstation pc with **Ubuntu 18.04** to run **FastQC**, **Trimmomatic**, **HiSat2**, **HTSeq**, and **DESeq2** locally. Also, the previous RNA-Seq alayses were of Soybean with treatment combinations of mycorrhizae and rhizobia inoculation.
 
-## Analysis
+# Analysis
 
-### Programs used?
+## Programs used?
 
 + FastQC
 + Trimmomatic 0.39
 + Bowtie 2.2.5.0
++ Tophat 2.1.1
++ STAR
 
-### Picking the right node
+## Picking the right node
 
 To find a node that we can use on our own, we need to see which nodes are already allocated to jobs and which ones are idle. To do this, we can run **sinfo**. We want to pick one of the nodes that are marked 'idle' so we get the whole thing and we aren't interrupting someone elses job. For the sake of this exercise, lets work on **big-mem**.
 
@@ -92,7 +81,7 @@ module use /cm/shared/modulefiles_local/
 
 After loading the modules you can use it just as you would any other command line.
 
-### Acquiring sequences
+## Acquiring sequences
 
 To download the sequences from the sequence read archive (SRA), the SRA Toolkit was used. The downloading of the files took a very long time, so this was left to run over night. The **--gzip** was used to keep the files a relatively small, although this can be left out to download uncompressed files, and **--split-files** was used to split the forward read from the reverse read for paired end read trimming through **Trimmomatic**.
 
@@ -118,7 +107,7 @@ This is an example of the single file, but the above code needed to be ran for a
 
 The results from downloading with **--split-files** gives 2 files per SRR, as mentioned before, one forward and one reverse. The suffix of the split files is one with **\_1.fastq.gz** and another with **\_2.fastq.gz**.
 
-### FastQC
+## FastQC
 
 FastQC can be run on all of the read files by using the wild card (\*) as in **\*.fastq.gz**. This prevents the need to hard code each individual read file into a FastQC command, which saves a lot of time since there are 24 read files in total for these 12 samples.
 
@@ -135,7 +124,7 @@ This is just the top of the file, and every category under the **Summary** headi
 
 The raw reads we have here all passed for adapter content and sequence length distribution and everything failed per base sequence content. SRR2121770, SRR2121771, SRR2121774, SRR2121775, SRR2121788, SRR2121781-2, and SRR2121789-1 were fairly decent quality reads. SRR2121778, SRR2121779, SRR2121780, SRR2121786, SRR2121787, SRR2121781-1, and SRR2121789-2 were of fairly lower quality (failing 3 or more in both reads. All of them failed both per base sequence quality and per tile sequence quality. 
 
-### Trimming with Trimmomatic
+## Trimming with Trimmomatic
 
 Conda was used again to run Trimmomatic. This isn't as easy as using the wildcard like with FastQC because each output has to be personalized for the read files that are input into Trimmomatic. Also, we have to make sure that the adapter sequences are in the same folder that we are running so we can refer to them easily when calling the Trimmomatic program. In this case, we are using the TruSeq3-PE-2.fa adapter sequences For example:
 
@@ -150,7 +139,9 @@ The highest number of reads dropped was from trimming SRR2121786, where 20.55% d
 
 The trimmed reads can be analyzed again with FastQC to see how well the trimming worked to make the file better quality. After running FastQC on the trimmed files we see that the quality of those that were really bad quality were improved. There were a few different metrics throughout all of the files that bounced from a warning before the failing, or from passing before to a warning, and so forth, overall creating better quality read files.
 
-### Alignment using Tophat
+## Alignment
+
+### Using Tophat
 
 Tophat can be installed using the same **conda install** (***conda install \-c bioconda tophat***). When this is finished installing, then we will need to get the mouse genome from the [Johns Hopkins Univeristy Center for computational BIology](http://ccb.jhu.edu/software/tophat/igenomes.shtml). The version of the mouse genome that I am using here is the [NCBI build37.2](ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Mus_musculus/NCBI/build37.2/Mus_musculus_NCBI_build37.2.tar.gz). Instead of downloading this from the website and having to move it to the cluser, I will just download it using wget into the folder that has the raw reads, trimmed reads, and the FastQC files.
 
@@ -184,9 +175,33 @@ This process took about 26 minutes to run. Now lets copy the index files to a fo
 
 This run took almost 3 hours to complete.. Running with 80 cores rather than 20 cores took just 4 minutes less, so the whole process must be limited by a single core and the core clock speed. The process does use close to 8,000% at its peak so there is a benefit to multicore, just isn't very scalable.
 
+### Using STAR
+
+STAR can be installed the same way as the previous programs with **conda install** (***conda install \-c bioconda star***). In order to run STAR, we need to creaate indices just like with tophat, but STAR has this built in. I'm going to be using the same genome and GTF file as previously downloaded, but Dr. Ge usesa different zipped genome from the *gencode* database.
 
 
+```bash
+~/miniconda2/bin/STAR \
+--runThreadN 80 \
+--runMode genomeGenerate \
+--genomeDir starIndex \
+--genomeFastaFiles Index/genome.fa \ #same when we made the bowtie indices 
+--sjdbGTFfile Mus_musculus/NCBI/build37.2/Annotation/Archives/archive-2015-07-17-14-32-40/Genes/genes.gtf
+```
 
+With the index files made, we can start aligning with STAR.
+
+
+```bash
+~/miniconda2/bin/STAR \
+--runThreadN 80 \
+--genomeDir genomeIndex \
+--readFilesIn 770_* \
+--outFilterIntronMotifs RemoveNoncanonical \
+--outFileNamePrefix 2121770 \
+--outSamtype BAM SortedByCoordinate
+
+```
 
 
 
