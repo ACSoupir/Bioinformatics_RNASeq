@@ -15,6 +15,19 @@ For STAT736-Fall-2019, we are analyzing the RNA-Seq from the publication [Genome
 
 The mice were exposed to whole-body ionizing radiation and sequences were extracted from both Bcells and non-B cells from the spleens of the mice. Two genotypes of mice were used: mice with p53 knocked out and the wild-type C57/Bl6. There were 4 different group combinations including the 2 different genotypes; each genotype was subjected to the ionizing radiation as well as control/mock.
 
+
+```
+## Warning: package 'knitr' was built under R version 3.5.3
+```
+
+```
+## Warning: package 'kableExtra' was built under R version 3.5.3
+```
+
+```
+## Warning: package 'reticulate' was built under R version 3.5.3
+```
+
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>Treatment groups of the mice that were either controls or treated with ionizing radiation to determine reaction of p53.</caption>
  <thead>
@@ -241,6 +254,73 @@ Once STAR is done running, we can assemble the transcripts with Cufflinks. This 
 ```bash
 ~/miniconda2/bin/cufflinks -p 20 -o SRR2121771_clout --library-type fr-firststrand 2121770Aligned.sortedByCoord.out.bam
 ```
+
+## Checking for Contamination
+
+### PhiX contamination
+
+Now we will look at what kind of contamination we are looking at. When samples are sequenced with Illumina, a PhiX control is run along side them. This control is for cluster generation, sequencing, alignment, and calibration for cross-talk matrix generation. We will use Bowtie to create a file to determine the PhiX contamination level.
+
+
+```bash
+~/miniconda2/bin/bowtie2 -p 20 -x PhiX/Illumina/RTA/Sequence/Bowtie2Index/genome \
+-1 TrimmedReads/770_fp.fq  -2 TrimmedReads/770_rp.fq -S phix.sam &> PhiXout/SRR2121770_phix.out
+```
+
+When the job is done running, the output file will show how much PhiX contamination we have. For example, lookin at the **SRR2121770_phix.out** created above, we see that 0.11% of the reads aligned with PhiX. The lower this value the better.
+
+### rRNA Sequences
+
+To retreive the rRNA sequences for mouse, we need to search the taxonomy database on NCBI for *Mus musculus*. Click on *Mus musculus* on the next page, and then the top *Mus musculus* at the head of the list. Now, select the top subtree link in the **Nucleotide** database. Select rRNA sequences on the left side of the page and download full list just downloading with Send > Complete Record > File > FASTA > Create File. Drag the file using WinSCP to the raw folder on the cluster and rename it to rRNA.fa.
+
+We are going to need to install **bwa** with conda in order to get the alignments to work. This can be done with ***conda install -c bioconda bwa***. Following this, we will need to make indixes for the rRNA that we downloaded. To make this more clean, lets make a directory for the rRNA sequences that we downloaded and the indices that we make.
+
+
+```bash
+mkdir rRNA
+```
+
+Then we move the **rRNA.fa** to the new **rRNA** folder with WinSCP and then we can run the bwa.
+
+
+```bash
+time ~/miniconda2/bin/bwa mem -t 20 rRNA/rRNA.fa TrimmedReads/770_fp.fq TrimmedReads/770_rp.fq > rnaAlign/770_rna.sam
+```
+
+When we are done creating the new *\*.sam* files for all of the forward/reverse read combinations, we can use samtools to convert the *\*.sam* file to *\*.bam* files which are essentially the same file just that *sam* is easier for us to look at while *bam* is binary. Samtools can be installed with ***conda install \-c bioconda samtools***.
+
+
+```bash
+~/miniconda2/bin/samtools view -@ 10 -bS -o rnaAlign/770_rna.bam rnaAlign/770.sam
+```
+
+Now in the rnaAlign folder we have our sam and bam file for each of the libraries. Lets create an output file with *flagstat*.
+
+
+```bash
+~/miniconda2/bin/samtools flagstat -@ 10 rnaAlign/770_rna.out
+```
+
+Wihtin this file we will be able to see the summary of our alignments to the rRNA file that we downloaded from NCBI.
+
+
+```bash
+#From 770_rna.out
+205559289 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 secondary
+85 + 0 supplementary
+0 + 0 duplicates
+4265179 + 0 mapped (2.07% : N/A)
+205559204 + 0 paired in sequencing
+102779602 + 0 read1
+102779602 + 0 read2
+4151684 + 0 properly paired (2.02% : N/A)
+4187608 + 0 with itself and mate mapped
+77486 + 0 singletons (0.04% : N/A)
+4222 + 0 with mate mapped to a different chr
+1026 + 0 with mate mapped to a different chr (mapQ>=5)
+```
+
 
 
 
