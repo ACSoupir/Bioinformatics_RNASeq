@@ -15,19 +15,6 @@ For STAT736-Fall-2019, we are analyzing the RNA-Seq from the publication [Genome
 
 The mice were exposed to whole-body ionizing radiation and sequences were extracted from both Bcells and non-B cells from the spleens of the mice. Two genotypes of mice were used: mice with p53 knocked out and the wild-type C57/Bl6. There were 4 different group combinations including the 2 different genotypes; each genotype was subjected to the ionizing radiation as well as control/mock.
 
-
-```
-## Warning: package 'knitr' was built under R version 3.5.3
-```
-
-```
-## Warning: package 'kableExtra' was built under R version 3.5.3
-```
-
-```
-## Warning: package 'reticulate' was built under R version 3.5.3
-```
-
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>Treatment groups of the mice that were either controls or treated with ionizing radiation to determine reaction of p53.</caption>
  <thead>
@@ -321,19 +308,34 @@ Wihtin this file we will be able to see the summary of our alignments to the rRN
 1026 + 0 with mate mapped to a different chr (mapQ>=5)
 ```
 
+### Bacterial contamination
+
+In order to find out the contamination, we need to install Kraken2 with ***conda install \-c bioconda kraken2*** and download a pre-built database containing bacteria, archaea, and viral sequences. The database we are going to download only contains about 5% of k-mers from the original database (but directions are sort of lacking to build an entirely new database). More information can be found at https://ccb.jhu.edu/software/kraken/ for the pre-built databases.
+
+Using the code in the next chunk will download the 8GB database and then extract the files so we can use them with the **Kraken2** program. Lets do this in the main project folder.
 
 
+```bash
+wget ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken2_v2_8GB_201904_UPDATE.tgz
+
+tar xzf minikraken2_v2_8GB_201904_UPDATE.tgz
+```
+
+Now lets make a directory for the output.
 
 
+```bash
+mkdir krakenOut
+```
+
+We can call **Kraken** with the extracted database folder and point it to the location of out paired end reads from trimming and to the output folder that we just created for the outputs.
 
 
+```bash
+~/miniconda2/bin/kraken2 --db minikraken2_v2_8GB_201904_UPDATE/ --output krakenOut/770.out --threads 10 --paired TrimmedReads/770_fp.fq TrimmedReads/770_rp.fq
+```
 
-
-
-
-
-
-
+When Kraken is done running, it will print out the number (and percentage) of reads that were classified. In this case, we have used 102779602 sequences, of which 19142843 sequences were classified (18.63%) and 83636759 sequences were unclassified (81.37%). My interpretation of this is that 18.63% of the reads are possibly from microbial cell contamination.
 
 
 
