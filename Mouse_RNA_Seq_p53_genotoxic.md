@@ -62,6 +62,8 @@ This is different than previous RNA-Seq analyses where I used my workstation pc 
 + Tophat 2.1.1
 + STAR
 + Cufflinks
++ Kraken2
++ MultiQC
 
 ### Picking the right node
 
@@ -160,6 +162,26 @@ The output from running FastQC is a zipped folder and an HTML file for each of t
 This is just the top of the file, and every category under the **Summary** heading has a graph that shows how the read quality looks for that particular metric. These reports can give insight into whether the reads are of decent quality or if the quality is poor. 
 
 The raw reads we have here all passed for adapter content and sequence length distribution and everything failed per base sequence content. SRR2121770, SRR2121771, SRR2121774, SRR2121775, SRR2121788, SRR2121781-2, and SRR2121789-1 were fairly decent quality reads. SRR2121778, SRR2121779, SRR2121780, SRR2121786, SRR2121787, SRR2121781-1, and SRR2121789-2 were of fairly lower quality (failing 3 or more in both reads. All of them failed both per base sequence quality and per tile sequence quality. 
+
+### MultiQC
+
+First lets install **multiqc** with conda. The command for this is ***conda install \-c bioconda multiqc***.
+
+When that is finished, we can run MultiQC in the folder with the QC files (they should be moved into a folder alone so things don't get cluttered later on in the analyses).
+
+
+```bash
+~/miniconda/bin/multiqc .
+```
+
+When MultiQC is finished running, there will be a new folder called **multiqc_data** where the summaries are stored. Now lets go back up a level where our raw data folder and fastqc folder is and make a new folder for all of our MultiQC data. We will copy the FastQC output from MultiQC to this new folder.
+
+
+```bash
+mkdir MultiQC_All
+
+cp RawQC/multiqc_data/multiqc_fastqc.txt MultiQC_All/
+```
 
 ## Trimming with Trimmomatic
 
@@ -336,6 +358,66 @@ We can call **Kraken** with the extracted database folder and point it to the lo
 ```
 
 When Kraken is done running, it will print out the number (and percentage) of reads that were classified. In this case, we have used 102779602 sequences, of which 19142843 sequences were classified (18.63%) and 83636759 sequences were unclassified (81.37%). My interpretation of this is that 18.63% of the reads are possibly from microbial cell contamination.
+
+## Counting Transcripts
+
+Since we have the **bam** files from the alignments of the different samples, we can count the features for each and get the transcipt counts using featureCounts form ***conda install \-c bioconda/label/cf201901 subread***. The genome and annotations that we previously downloaded were from genome **mm9** so we have to specify to *featureCounts* what we want to actually count. FeatureCounts defaults to using **gene_id** which our output bam files don't have described correctly for *featureCounts* to read them. This is a single line of code because we can use a wildcard to run through all of the **bam** files. 
+
+
+```bash
+#Move to the Star Alignment output folder for a working directory
+cd StarOut
+
+~/miniconda2/bin/featureCounts -a /gpfs/scratch/alex.soupir/Mus/raw/Mus_musculus/NCBI/build37.2/Annotation/Archives/archive-2015-07-17-14-32-40/Genes/genes.gtf -g 'transcript_id' -o readCounds.txt *bam
+```
+
+With the files that we are working with, this will take between 3.5 minutes to 5 minutes per **bam** file. The output progress for 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
