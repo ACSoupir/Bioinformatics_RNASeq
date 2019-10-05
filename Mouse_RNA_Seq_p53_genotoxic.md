@@ -381,6 +381,7 @@ Lets look at the data that we have collected from all of the MultiQC runs that w
 
 ```r
 qc = read.csv('Whole Data QC.csv', header=FALSE, na.strings="")
+<<<<<<< HEAD
 kable(qc) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
@@ -3668,6 +3669,1652 @@ kable(qc) %>%
 </tbody>
 </table>
 
+=======
+qc
+```
+
+```
+##                     V1
+## 1                 <NA>
+## 2               FastQC
+## 3                 <NA>
+## 4                 <NA>
+## 5                 <NA>
+## 6                 <NA>
+## 7                 <NA>
+## 8                 <NA>
+## 9                 <NA>
+## 10                <NA>
+## 11                <NA>
+## 12                <NA>
+## 13                <NA>
+## 14                <NA>
+## 15                <NA>
+## 16                <NA>
+## 17                <NA>
+## 18                <NA>
+## 19                <NA>
+## 20                <NA>
+## 21                <NA>
+## 22            Trimming
+## 23                <NA>
+## 24                <NA>
+## 25                <NA>
+## 26                <NA>
+## 27                <NA>
+## 28                <NA>
+## 29                <NA>
+## 30                <NA>
+## 31      STAR Alignment
+## 32                <NA>
+## 33                <NA>
+## 34                <NA>
+## 35                <NA>
+## 36                <NA>
+## 37                <NA>
+## 38                <NA>
+## 39                <NA>
+## 40                <NA>
+## 41                <NA>
+## 42                <NA>
+## 43                <NA>
+## 44                <NA>
+## 45                <NA>
+## 46                <NA>
+## 47                <NA>
+## 48                <NA>
+## 49                <NA>
+## 50                <NA>
+## 51                <NA>
+## 52                <NA>
+## 53                <NA>
+## 54                <NA>
+## 55                <NA>
+## 56                <NA>
+## 57  PhiX Contamination
+## 58                <NA>
+## 59                <NA>
+## 60                <NA>
+## 61                <NA>
+## 62                <NA>
+## 63                <NA>
+## 64                <NA>
+## 65                <NA>
+## 66                <NA>
+## 67                <NA>
+## 68                <NA>
+## 69                <NA>
+## 70  rRNA Contamination
+## 71                <NA>
+## 72                <NA>
+## 73                <NA>
+## 74                <NA>
+## 75                <NA>
+## 76                <NA>
+## 77                <NA>
+## 78                <NA>
+## 79                <NA>
+## 80                <NA>
+## 81                <NA>
+## 82                <NA>
+## 83                <NA>
+## 84                <NA>
+## 85                <NA>
+## 86                <NA>
+## 87                <NA>
+## 88                <NA>
+## 89                <NA>
+## 90                <NA>
+## 91                <NA>
+## 92                <NA>
+## 93                <NA>
+## 94                <NA>
+## 95                <NA>
+## 96                <NA>
+## 97                <NA>
+## 98                <NA>
+## 99                <NA>
+## 100               <NA>
+## 101               <NA>
+## 102               <NA>
+## 103     Feature Counts
+## 104               <NA>
+## 105               <NA>
+## 106               <NA>
+## 107               <NA>
+## 108               <NA>
+## 109               <NA>
+## 110               <NA>
+## 111               <NA>
+## 112               <NA>
+## 113               <NA>
+## 114               <NA>
+## 115               <NA>
+## 116               <NA>
+##                                                         V2
+## 1                                                   Sample
+## 2                                          adapter_content
+## 3                        Sequences flagged as poor quality
+## 4                              sequence_duplication_levels
+## 5                                      avg_sequence_length
+## 6                                                 Encoding
+## 7                                per_base_sequence_quality
+## 8                             sequence_length_distribution
+## 9                                          Sequence length
+## 10                                               File type
+## 11                                        basic_statistics
+## 12                                 per_sequence_gc_content
+## 13                                         Total Sequences
+## 14                                      per_base_n_content
+## 15                               per_base_sequence_content
+## 16                               overrepresented_sequences
+## 17                                                     %GC
+## 18                           total_deduplicated_percentage
+## 19                                                Filename
+## 20                               per_tile_sequence_quality
+## 21                             per_sequence_quality_scores
+## 22                                               surviving
+## 23                                           surviving_pct
+## 24                              reverse_only_surviving_pct
+## 25                                  forward_only_surviving
+## 26                                                 dropped
+## 27                                             dropped_pct
+## 28                              forward_only_surviving_pct
+## 29                                        input_read_pairs
+## 30                                  reverse_only_surviving
+## 31                                 uniquely_mapped_percent
+## 32                                             num_splices
+## 33                                        num_GCAG_splices
+## 34                                        insertion_length
+## 35                                         deletion_length
+## 36                               unmapped_tooshort_percent
+## 37                                  avg_mapped_read_length
+## 38                                           deletion_rate
+## 39                                           mismatch_rate
+## 40                                   avg_input_read_length
+## 41                                        num_ATAC_splices
+## 42                                   num_annotated_splices
+## 43                                        num_GTAG_splices
+## 44                                         uniquely_mapped
+## 45                                     multimapped_toomany
+## 46                                     unmapped_mismatches
+## 47                             unmapped_mismatches_percent
+## 48                                             total_reads
+## 49                                          unmapped_other
+## 50                                          insertion_rate
+## 51                                  unmapped_other_percent
+## 52                                     multimapped_percent
+## 53                                             multimapped
+## 54                                num_noncanonical_splices
+## 55                                       unmapped_tooshort
+## 56                             multimapped_toomany_percent
+## 57                                  overall_alignment_rate
+## 58                        paired_aligned_mate_multi_halved
+## 59                                     paired_aligned_none
+## 60                               paired_aligned_mate_multi
+## 61                              paired_aligned_discord_one
+## 62                                 paired_aligned_mate_one
+## 63                                            paired_total
+## 64                         paired_aligned_mate_none_halved
+## 65                                    paired_aligned_multi
+## 66                                      paired_aligned_one
+## 67                                             total_reads
+## 68                          paired_aligned_mate_one_halved
+## 69                                paired_aligned_mate_none
+## 70                                           mapped_passed
+## 71                                       duplicates_failed
+## 72                                        secondary_passed
+## 73                             paired in sequencing_failed
+## 74                                       duplicates_passed
+## 75                                            read2_passed
+## 76                                            read1_failed
+## 77                                            read1_passed
+## 78              with mate mapped to a different chr_passed
+## 79                                            total_failed
+## 80                              properly paired_passed_pct
+## 81                                       singletons_passed
+## 82                                    supplementary_passed
+## 83                                   singletons_passed_pct
+## 84                                       mapped_failed_pct
+## 85                                       mapped_passed_pct
+## 86                                    supplementary_failed
+## 87                      with itself and mate mapped_failed
+## 88                                           mapped_failed
+## 89                                            total_passed
+## 90                                  properly paired_failed
+## 91                                          flagstat_total
+## 92  with mate mapped to a different chr (mapQ >= 5)_passed
+## 93                              properly paired_failed_pct
+## 94  with mate mapped to a different chr (mapQ >= 5)_failed
+## 95                      with itself and mate mapped_passed
+## 96                                            read2_failed
+## 97              with mate mapped to a different chr_failed
+## 98                                  properly paired_passed
+## 99                             paired in sequencing_passed
+## 100                                      singletons_failed
+## 101                                       secondary_failed
+## 102                                  singletons_failed_pct
+## 103                                   Unassigned_Ambiguity
+## 104                              Unassigned_MappingQuality
+## 105                                       percent_assigned
+## 106                                 Unassigned_Nonjunction
+## 107                                   Unassigned_Duplicate
+## 108                                     Unassigned_Chimera
+## 109                                    Unassigned_Unmapped
+## 110                                               Assigned
+## 111                                Unassigned_MultiMapping
+## 112                          Unassigned_Overlapping_Length
+## 113                                   Unassigned_Secondary
+## 114                              Unassigned_FragmentLength
+## 115                                  Unassigned_NoFeatures
+## 116                                                  Total
+##                          V3                      V4
+## 1              SRR2121770_1            SRR2121770_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      warn                    warn
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      pass                    pass
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     pass                    pass
+## 13                118323219               118323219
+## 14                     pass                    pass
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       47                      47
+## 18              52.20958673             55.28743506
+## 19    SRR2121770_1.fastq.gz   SRR2121770_2.fastq.gz
+## 20                     warn                    fail
+## 21                     pass                    pass
+## 22                102779602                    <NA>
+## 23                    86.86                    <NA>
+## 24                     4.48                    <NA>
+## 25                  3202267                    <NA>
+## 26                  7036792                    <NA>
+## 27                     5.95                    <NA>
+## 28                     2.71                    <NA>
+## 29                118323219                    <NA>
+## 30                  5304558                    <NA>
+## 31                    81.73                    <NA>
+## 32                  8669080                    <NA>
+## 33                    90012                    <NA>
+## 34                     1.11                    <NA>
+## 35                     1.35                    <NA>
+## 36                     4.08                    <NA>
+## 37                   100.73                    <NA>
+## 38                        0                    <NA>
+## 39                     0.23                    <NA>
+## 40                      101                    <NA>
+## 41                     8039                    <NA>
+## 42                  8581504                    <NA>
+## 43                  8571029                    <NA>
+## 44                 83997598                    <NA>
+## 45                  1852495                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                102779602                    <NA>
+## 49                   432340                    <NA>
+## 50                        0                    <NA>
+## 51                     0.42                    <NA>
+## 52                    11.96                    <NA>
+## 53                 12297290                    <NA>
+## 54                        0                    <NA>
+## 55                  4199879                    <NA>
+## 56                      1.8                    <NA>
+## 57                     0.11                    <NA>
+## 58                        0                    <NA>
+## 59                102674701                    <NA>
+## 60                        0                    <NA>
+## 61                     5081                    <NA>
+## 62                     2761                    <NA>
+## 63                102779602                    <NA>
+## 64              102668239.5                    <NA>
+## 65                        0                    <NA>
+## 66                   104901                    <NA>
+## 67                102779602                    <NA>
+## 68                   1380.5                    <NA>
+## 69                205336479                    <NA>
+## 70                  4265172                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                102779602                    <NA>
+## 76                        0                    <NA>
+## 77                102779602                    <NA>
+## 78                     4240                    <NA>
+## 79                        0                    <NA>
+## 80                     2.02                    <NA>
+## 81                    77493                    <NA>
+## 82                       85                    <NA>
+## 83                     0.04                    <NA>
+## 84                      nan                    <NA>
+## 85                     2.07                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                205559289                    <NA>
+## 90                        0                    <NA>
+## 91                205559289                    <NA>
+## 92                     1026                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  4187594                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  4151444                    <NA>
+## 99                205559204                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 5553184                    <NA>
+## 104                       0                    <NA>
+## 105             38.92490502                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                92630635                    <NA>
+## 111                69977472                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                69811377                    <NA>
+## 116               237972668                    <NA>
+##                          V5                      V6
+## 1              SRR2121771_1            SRR2121771_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      pass                    pass
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      pass                    pass
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     pass                    pass
+## 13                103127231               103127231
+## 14                     warn                    pass
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       46                      46
+## 18              90.47297502             97.22714143
+## 19    SRR2121771_1.fastq.gz   SRR2121771_2.fastq.gz
+## 20                     fail                    fail
+## 21                     pass                    pass
+## 22                 88509413                    <NA>
+## 23                    85.83                    <NA>
+## 24                     2.52                    <NA>
+## 25                  5041955                    <NA>
+## 26                  6973727                    <NA>
+## 27                     6.76                    <NA>
+## 28                     4.89                    <NA>
+## 29                103127231                    <NA>
+## 30                  2602136                    <NA>
+## 31                    82.35                    <NA>
+## 32                  8000968                    <NA>
+## 33                    83679                    <NA>
+## 34                      1.1                    <NA>
+## 35                     1.33                    <NA>
+## 36                     4.21                    <NA>
+## 37                   101.11                    <NA>
+## 38                        0                    <NA>
+## 39                     0.29                    <NA>
+## 40                      101                    <NA>
+## 41                     7497                    <NA>
+## 42                  7919864                    <NA>
+## 43                  7909792                    <NA>
+## 44                 72886249                    <NA>
+## 45                  1405409                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 88509413                    <NA>
+## 49                   370957                    <NA>
+## 50                        0                    <NA>
+## 51                     0.42                    <NA>
+## 52                    11.44                    <NA>
+## 53                 10128397                    <NA>
+## 54                        0                    <NA>
+## 55                  3718401                    <NA>
+## 56                     1.59                    <NA>
+## 57                     0.13                    <NA>
+## 58                        0                    <NA>
+## 59                 88400163                    <NA>
+## 60                        0                    <NA>
+## 61                     5514                    <NA>
+## 62                     2466                    <NA>
+## 63                 88509413                    <NA>
+## 64                 88393416                    <NA>
+## 65                        0                    <NA>
+## 66                   109250                    <NA>
+## 67                 88509413                    <NA>
+## 68                     1233                    <NA>
+## 69                176786832                    <NA>
+## 70                  3371478                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 88509413                    <NA>
+## 76                        0                    <NA>
+## 77                 88509413                    <NA>
+## 78                     3672                    <NA>
+## 79                        0                    <NA>
+## 80                     1.84                    <NA>
+## 81                    85229                    <NA>
+## 82                       65                    <NA>
+## 83                     0.05                    <NA>
+## 84                      nan                    <NA>
+## 85                      1.9                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                177018891                    <NA>
+## 90                        0                    <NA>
+## 91                177018891                    <NA>
+## 92                      854                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  3286184                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  3256926                    <NA>
+## 99                177018826                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 4245795                    <NA>
+## 104                       0                    <NA>
+## 105             41.43212911                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                83632332                    <NA>
+## 111                56081314                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                57894371                    <NA>
+## 116               201853812                    <NA>
+##                          V7                      V8
+## 1              SRR2121774_1            SRR2121774_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      pass                    pass
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      pass                    pass
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     pass                    pass
+## 13                 91225885                91225885
+## 14                     warn                    pass
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       47                      47
+## 18              91.11411337             97.47431986
+## 19    SRR2121774_1.fastq.gz   SRR2121774_2.fastq.gz
+## 20                     fail                    fail
+## 21                     pass                    pass
+## 22                 77240029                    <NA>
+## 23                    84.67                    <NA>
+## 24                     2.53                    <NA>
+## 25                  4667583                    <NA>
+## 26                  7013028                    <NA>
+## 27                     7.69                    <NA>
+## 28                     5.12                    <NA>
+## 29                 91225885                    <NA>
+## 30                  2305245                    <NA>
+## 31                    81.67                    <NA>
+## 32                 10613774                    <NA>
+## 33                   116149                    <NA>
+## 34                     1.12                    <NA>
+## 35                     1.37                    <NA>
+## 36                     3.42                    <NA>
+## 37                    101.1                    <NA>
+## 38                        0                    <NA>
+## 39                     0.29                    <NA>
+## 40                      101                    <NA>
+## 41                    10782                    <NA>
+## 42                 10513157                    <NA>
+## 43                 10486843                    <NA>
+## 44                 63080382                    <NA>
+## 45                  1242903                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 77240029                    <NA>
+## 49                   254880                    <NA>
+## 50                        0                    <NA>
+## 51                     0.33                    <NA>
+## 52                    12.97                    <NA>
+## 53                 10020381                    <NA>
+## 54                        0                    <NA>
+## 55                  2641483                    <NA>
+## 56                     1.61                    <NA>
+## 57                     0.18                    <NA>
+## 58                        0                    <NA>
+## 59                 77108986                    <NA>
+## 60                        0                    <NA>
+## 61                     6603                    <NA>
+## 62                     2825                    <NA>
+## 63                 77240029                    <NA>
+## 64               77100970.5                    <NA>
+## 65                        0                    <NA>
+## 66                   131043                    <NA>
+## 67                 77240029                    <NA>
+## 68                   1412.5                    <NA>
+## 69                154201941                    <NA>
+## 70                  1366577                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 77240029                    <NA>
+## 76                        0                    <NA>
+## 77                 77240029                    <NA>
+## 78                      692                    <NA>
+## 79                        0                    <NA>
+## 80                     0.86                    <NA>
+## 81                    21005                    <NA>
+## 82                       16                    <NA>
+## 83                     0.01                    <NA>
+## 84                      nan                    <NA>
+## 85                     0.88                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                154480074                    <NA>
+## 90                        0                    <NA>
+## 91                154480074                    <NA>
+## 92                      118                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  1345556                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  1334312                    <NA>
+## 99                154480058                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 4120211                    <NA>
+## 104                       0                    <NA>
+## 105              45.0933741                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                81770639                    <NA>
+## 111                55175498                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                40269914                    <NA>
+## 116               181336262                    <NA>
+##                          V9                     V10
+## 1              SRR2121775_1            SRR2121775_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      pass                    pass
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      pass                    pass
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     warn                    warn
+## 13                108661623               108661623
+## 14                     pass                    pass
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       47                      47
+## 18              72.31423101             95.57923295
+## 19    SRR2121775_1.fastq.gz   SRR2121775_2.fastq.gz
+## 20                     fail                    fail
+## 21                     pass                    pass
+## 22                 94179097                    <NA>
+## 23                    86.67                    <NA>
+## 24                     2.29                    <NA>
+## 25                  4832339                    <NA>
+## 26                  7160952                    <NA>
+## 27                     6.59                    <NA>
+## 28                     4.45                    <NA>
+## 29                108661623                    <NA>
+## 30                  2489235                    <NA>
+## 31                     83.1                    <NA>
+## 32                 11755566                    <NA>
+## 33                   124779                    <NA>
+## 34                     1.17                    <NA>
+## 35                     1.26                    <NA>
+## 36                     4.09                    <NA>
+## 37                   101.14                    <NA>
+## 38                        0                    <NA>
+## 39                     0.17                    <NA>
+## 40                      101                    <NA>
+## 41                    11677                    <NA>
+## 42                 11643271                    <NA>
+## 43                 11619110                    <NA>
+## 44                 78265974                    <NA>
+## 45                  1061446                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 94179097                    <NA>
+## 49                   377196                    <NA>
+## 50                        0                    <NA>
+## 51                      0.4                    <NA>
+## 52                    11.27                    <NA>
+## 53                 10617654                    <NA>
+## 54                        0                    <NA>
+## 55                  3856827                    <NA>
+## 56                     1.13                    <NA>
+## 57                      0.2                    <NA>
+## 58                        0                    <NA>
+## 59                 93998943                    <NA>
+## 60                        0                    <NA>
+## 61                     9196                    <NA>
+## 62                     3974                    <NA>
+## 63                 94179097                    <NA>
+## 64                 93987760                    <NA>
+## 65                        0                    <NA>
+## 66                   180154                    <NA>
+## 67                 94179097                    <NA>
+## 68                     1987                    <NA>
+## 69                187975520                    <NA>
+## 70                  4031209                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 94179097                    <NA>
+## 76                        0                    <NA>
+## 77                 94179097                    <NA>
+## 78                     2742                    <NA>
+## 79                        0                    <NA>
+## 80                     2.07                    <NA>
+## 81                    88202                    <NA>
+## 82                       23                    <NA>
+## 83                     0.05                    <NA>
+## 84                      nan                    <NA>
+## 85                     2.14                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                188358217                    <NA>
+## 90                        0                    <NA>
+## 91                188358217                    <NA>
+## 92                      442                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  3942984                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  3903816                    <NA>
+## 99                188358194                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 4873854                    <NA>
+## 104                       0                    <NA>
+## 105             46.82554793                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                99643999                    <NA>
+## 111                56266414                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                52014095                    <NA>
+## 116               212798362                    <NA>
+##                         V11                     V12
+## 1              SRR2121778_1            SRR2121778_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      warn                    pass
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      fail                    fail
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     warn                    warn
+## 13                136766553               136766553
+## 14                     fail                    warn
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       46                      47
+## 18              65.27895305             83.85617925
+## 19    SRR2121778_1.fastq.gz   SRR2121778_2.fastq.gz
+## 20                     fail                    fail
+## 21                     pass                    pass
+## 22                108337271                    <NA>
+## 23                    79.21                    <NA>
+## 24                     2.11                    <NA>
+## 25                  9375417                    <NA>
+## 26                 16166923                    <NA>
+## 27                    11.82                    <NA>
+## 28                     6.86                    <NA>
+## 29                136766553                    <NA>
+## 30                  2886942                    <NA>
+## 31                    83.43                    <NA>
+## 32                 10864591                    <NA>
+## 33                   116447                    <NA>
+## 34                     1.13                    <NA>
+## 35                     1.36                    <NA>
+## 36                     3.51                    <NA>
+## 37                    100.6                    <NA>
+## 38                     0.01                    <NA>
+## 39                     0.17                    <NA>
+## 40                      100                    <NA>
+## 41                     9722                    <NA>
+## 42                 10755797                    <NA>
+## 43                 10738422                    <NA>
+## 44                 90382084                    <NA>
+## 45                  1736807                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                108337271                    <NA>
+## 49                   476580                    <NA>
+## 50                        0                    <NA>
+## 51                     0.44                    <NA>
+## 52                    11.02                    <NA>
+## 53                 11939994                    <NA>
+## 54                        0                    <NA>
+## 55                  3801806                    <NA>
+## 56                      1.6                    <NA>
+## 57                     0.12                    <NA>
+## 58                        0                    <NA>
+## 59                108212089                    <NA>
+## 60                        0                    <NA>
+## 61                     6325                    <NA>
+## 62                     2693                    <NA>
+## 63                108337271                    <NA>
+## 64              108204417.5                    <NA>
+## 65                        0                    <NA>
+## 66                   125182                    <NA>
+## 67                108337271                    <NA>
+## 68                   1346.5                    <NA>
+## 69                216408835                    <NA>
+## 70                  5947728                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                108337271                    <NA>
+## 76                        0                    <NA>
+## 77                108337271                    <NA>
+## 78                     7850                    <NA>
+## 79                        0                    <NA>
+## 80                      2.7                    <NA>
+## 81                    48177                    <NA>
+## 82                       43                    <NA>
+## 83                     0.02                    <NA>
+## 84                      nan                    <NA>
+## 85                     2.75                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                216674585                    <NA>
+## 90                        0                    <NA>
+## 91                216674585                    <NA>
+## 92                     1093                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  5899508                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  5846848                    <NA>
+## 99                216674542                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 5225069                    <NA>
+## 104                       0                    <NA>
+## 105             45.79057473                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110               112432428                    <NA>
+## 111                64772012                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                63106671                    <NA>
+## 116               245536180                    <NA>
+##                         V13                     V14
+## 1              SRR2121779_1            SRR2121779_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      pass                    pass
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      fail                    fail
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     pass                    fail
+## 13                124265478               124265478
+## 14                     fail                    warn
+## 15                     fail                    fail
+## 16                     pass                    warn
+## 17                       46                      46
+## 18              73.08810256             79.50169478
+## 19    SRR2121779_1.fastq.gz   SRR2121779_2.fastq.gz
+## 20                     fail                    fail
+## 21                     pass                    pass
+## 22                 92924182                    <NA>
+## 23                    74.78                    <NA>
+## 24                     2.44                    <NA>
+## 25                  7916665                    <NA>
+## 26                 20393774                    <NA>
+## 27                    16.41                    <NA>
+## 28                     6.37                    <NA>
+## 29                124265478                    <NA>
+## 30                  3030857                    <NA>
+## 31                    84.55                    <NA>
+## 32                  8361644                    <NA>
+## 33                    86763                    <NA>
+## 34                     1.11                    <NA>
+## 35                     1.35                    <NA>
+## 36                     3.87                    <NA>
+## 37                   100.51                    <NA>
+## 38                     0.01                    <NA>
+## 39                     0.22                    <NA>
+## 40                      100                    <NA>
+## 41                     7455                    <NA>
+## 42                  8273449                    <NA>
+## 43                  8267426                    <NA>
+## 44                 78565331                    <NA>
+## 45                  1362362                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 92924182                    <NA>
+## 49                   454868                    <NA>
+## 50                        0                    <NA>
+## 51                     0.49                    <NA>
+## 52                     9.63                    <NA>
+## 53                  8949092                    <NA>
+## 54                        0                    <NA>
+## 55                  3592529                    <NA>
+## 56                     1.47                    <NA>
+## 57                     0.12                    <NA>
+## 58                        0                    <NA>
+## 59                 92820803                    <NA>
+## 60                        0                    <NA>
+## 61                     5222                    <NA>
+## 62                     2277                    <NA>
+## 63                 92924182                    <NA>
+## 64               92814442.5                    <NA>
+## 65                        0                    <NA>
+## 66                   103379                    <NA>
+## 67                 92924182                    <NA>
+## 68                   1138.5                    <NA>
+## 69                185628885                    <NA>
+## 70                  5093417                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 92924182                    <NA>
+## 76                        0                    <NA>
+## 77                 92924182                    <NA>
+## 78                     5990                    <NA>
+## 79                        0                    <NA>
+## 80                     2.69                    <NA>
+## 81                    47851                    <NA>
+## 82                       44                    <NA>
+## 83                     0.03                    <NA>
+## 84                      nan                    <NA>
+## 85                     2.74                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                185848408                    <NA>
+## 90                        0                    <NA>
+## 91                185848408                    <NA>
+## 92                      940                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  5045522                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  5001956                    <NA>
+## 99                185848364                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 4143370                    <NA>
+## 104                       0                    <NA>
+## 105              42.0896936                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                87231124                    <NA>
+## 111                50119894                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                65756168                    <NA>
+## 116               207250556                    <NA>
+##                         V15                     V16
+## 1              SRR2121780_1            SRR2121780_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      pass                    pass
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      fail                    fail
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     warn                    fail
+## 13                 99685598                99685598
+## 14                     fail                    warn
+## 15                     fail                    fail
+## 16                     pass                    pass
+## 17                       46                      46
+## 18              92.46127029             94.09779679
+## 19    SRR2121780_1.fastq.gz   SRR2121780_2.fastq.gz
+## 20                     fail                    fail
+## 21                     pass                    pass
+## 22                 76172416                    <NA>
+## 23                    76.41                    <NA>
+## 24                     2.52                    <NA>
+## 25                  6350522                    <NA>
+## 26                 14647690                    <NA>
+## 27                    14.69                    <NA>
+## 28                     6.37                    <NA>
+## 29                 99685598                    <NA>
+## 30                  2514970                    <NA>
+## 31                    82.48                    <NA>
+## 32                  6866296                    <NA>
+## 33                    74268                    <NA>
+## 34                     1.11                    <NA>
+## 35                     1.35                    <NA>
+## 36                     3.66                    <NA>
+## 37                   100.51                    <NA>
+## 38                     0.01                    <NA>
+## 39                     0.22                    <NA>
+## 40                      100                    <NA>
+## 41                     6186                    <NA>
+## 42                  6799294                    <NA>
+## 43                  6785842                    <NA>
+## 44                 62830380                    <NA>
+## 45                  1374461                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 76172416                    <NA>
+## 49                   335571                    <NA>
+## 50                        0                    <NA>
+## 51                     0.44                    <NA>
+## 52                    11.61                    <NA>
+## 53                  8840667                    <NA>
+## 54                        0                    <NA>
+## 55                  2791337                    <NA>
+## 56                      1.8                    <NA>
+## 57                      0.1                    <NA>
+## 58                        0                    <NA>
+## 59                 76103405                    <NA>
+## 60                        0                    <NA>
+## 61                     3475                    <NA>
+## 62                     1515                    <NA>
+## 63                 76172416                    <NA>
+## 64               76099172.5                    <NA>
+## 65                        0                    <NA>
+## 66                    69011                    <NA>
+## 67                 76172416                    <NA>
+## 68                    757.5                    <NA>
+## 69                152198345                    <NA>
+## 70                  4109793                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 76172416                    <NA>
+## 76                        0                    <NA>
+## 77                 76172416                    <NA>
+## 78                     4782                    <NA>
+## 79                        0                    <NA>
+## 80                     2.65                    <NA>
+## 81                    41299                    <NA>
+## 82                       44                    <NA>
+## 83                     0.03                    <NA>
+## 84                      nan                    <NA>
+## 85                      2.7                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                152344876                    <NA>
+## 90                        0                    <NA>
+## 91                152344876                    <NA>
+## 92                      801                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  4068450                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  4035832                    <NA>
+## 99                152344832                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 3730746                    <NA>
+## 104                       0                    <NA>
+## 105             43.45341423                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                76094464                    <NA>
+## 111                49456582                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                45835550                    <NA>
+## 116               175117342                    <NA>
+##                         V17                     V18
+## 1              SRR2121781_1            SRR2121781_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      warn                    warn
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      fail                    pass
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     pass                    pass
+## 13                106360532               106360532
+## 14                     pass                    pass
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       46                      46
+## 18              54.09833163              52.4832411
+## 19    SRR2121781_1.fastq.gz   SRR2121781_2.fastq.gz
+## 20                     fail                    warn
+## 21                     pass                    pass
+## 22                 95488961                    <NA>
+## 23                    89.78                    <NA>
+## 24                      1.8                    <NA>
+## 25                  3894412                    <NA>
+## 26                  5067412                    <NA>
+## 27                     4.76                    <NA>
+## 28                     3.66                    <NA>
+## 29                106360532                    <NA>
+## 30                  1909747                    <NA>
+## 31                    86.82                    <NA>
+## 32                  7991948                    <NA>
+## 33                    80836                    <NA>
+## 34                     1.13                    <NA>
+## 35                      1.4                    <NA>
+## 36                     3.45                    <NA>
+## 37                   100.81                    <NA>
+## 38                     0.01                    <NA>
+## 39                     0.17                    <NA>
+## 40                      101                    <NA>
+## 41                     7544                    <NA>
+## 42                  7913548                    <NA>
+## 43                  7903568                    <NA>
+## 44                 82902461                    <NA>
+## 45                   846193                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 95488961                    <NA>
+## 49                   468726                    <NA>
+## 50                        0                    <NA>
+## 51                     0.49                    <NA>
+## 52                     8.35                    <NA>
+## 53                  7971370                    <NA>
+## 54                        0                    <NA>
+## 55                  3300211                    <NA>
+## 56                     0.89                    <NA>
+## 57                     0.15                    <NA>
+## 58                        0                    <NA>
+## 59                 95350795                    <NA>
+## 60                        0                    <NA>
+## 61                     7190                    <NA>
+## 62                     2999                    <NA>
+## 63                 95488961                    <NA>
+## 64               95342105.5                    <NA>
+## 65                        0                    <NA>
+## 66                   138166                    <NA>
+## 67                 95488961                    <NA>
+## 68                   1499.5                    <NA>
+## 69                190684211                    <NA>
+## 70                  5042021                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 95488961                    <NA>
+## 76                        0                    <NA>
+## 77                 95488961                    <NA>
+## 78                     5840                    <NA>
+## 79                        0                    <NA>
+## 80                     2.59                    <NA>
+## 81                    53429                    <NA>
+## 82                       72                    <NA>
+## 83                     0.03                    <NA>
+## 84                      nan                    <NA>
+## 85                     2.64                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                190977994                    <NA>
+## 90                        0                    <NA>
+## 91                190977994                    <NA>
+## 92                     1206                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  4988520                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  4945218                    <NA>
+## 99                190977922                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 3744259                    <NA>
+## 104                       0                    <NA>
+## 105             41.01237187                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                86121025                    <NA>
+## 111                44182994                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                75939638                    <NA>
+## 116               209987916                    <NA>
+##                         V19                     V20
+## 1              SRR2121786_1            SRR2121786_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      warn                    pass
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      fail                    fail
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     warn                    fail
+## 13                 99988292                99988292
+## 14                     fail                    fail
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       47                      47
+## 18              68.88309902             74.63550918
+## 19    SRR2121786_1.fastq.gz   SRR2121786_2.fastq.gz
+## 20                     fail                    fail
+## 21                     pass                    fail
+## 22                 69906417                    <NA>
+## 23                    69.91                    <NA>
+## 24                     2.59                    <NA>
+## 25                  6944977                    <NA>
+## 26                 20551506                    <NA>
+## 27                    20.55                    <NA>
+## 28                     6.95                    <NA>
+## 29                 99988292                    <NA>
+## 30                  2585392                    <NA>
+## 31                    80.75                    <NA>
+## 32                  6183074                    <NA>
+## 33                    65893                    <NA>
+## 34                     1.16                    <NA>
+## 35                      1.2                    <NA>
+## 36                     5.83                    <NA>
+## 37                   100.41                    <NA>
+## 38                     0.01                    <NA>
+## 39                     0.26                    <NA>
+## 40                      100                    <NA>
+## 41                     5492                    <NA>
+## 42                  6103902                    <NA>
+## 43                  6111689                    <NA>
+## 44                 56450144                    <NA>
+## 45                  1009216                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 69906417                    <NA>
+## 49                   370629                    <NA>
+## 50                        0                    <NA>
+## 51                     0.53                    <NA>
+## 52                    11.44                    <NA>
+## 53                  7999509                    <NA>
+## 54                        0                    <NA>
+## 55                  4076919                    <NA>
+## 56                     1.44                    <NA>
+## 57                     0.18                    <NA>
+## 58                        0                    <NA>
+## 59                 69784944                    <NA>
+## 60                        0                    <NA>
+## 61                     6424                    <NA>
+## 62                     2696                    <NA>
+## 63                 69906417                    <NA>
+## 64                 69777172                    <NA>
+## 65                        0                    <NA>
+## 66                   121473                    <NA>
+## 67                 69906417                    <NA>
+## 68                     1348                    <NA>
+## 69                139554344                    <NA>
+## 70                  7103552                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 69906417                    <NA>
+## 76                        0                    <NA>
+## 77                 69906417                    <NA>
+## 78                     5348                    <NA>
+## 79                        0                    <NA>
+## 80                     4.98                    <NA>
+## 81                    60929                    <NA>
+## 82                       19                    <NA>
+## 83                     0.04                    <NA>
+## 84                      nan                    <NA>
+## 85                     5.08                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                139812853                    <NA>
+## 90                        0                    <NA>
+## 91                139812853                    <NA>
+## 92                      964                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  7042604                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  6955726                    <NA>
+## 99                139812834                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 3208052                    <NA>
+## 104                       0                    <NA>
+## 105             46.15918368                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                71761506                    <NA>
+## 111                42564996                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                37930730                    <NA>
+## 116               155465284                    <NA>
+##                         V21                     V22
+## 1              SRR2121787_1            SRR2121787_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      pass                    pass
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      fail                    fail
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     warn                    fail
+## 13                 75410310                75410310
+## 14                     fail                    warn
+## 15                     fail                    fail
+## 16                     pass                    pass
+## 17                       46                      46
+## 18              93.00930552              94.9666922
+## 19    SRR2121787_1.fastq.gz   SRR2121787_2.fastq.gz
+## 20                     fail                    fail
+## 21                     pass                    fail
+## 22                 54427039                    <NA>
+## 23                    72.17                    <NA>
+## 24                     2.65                    <NA>
+## 25                  5349296                    <NA>
+## 26                 13638339                    <NA>
+## 27                    18.09                    <NA>
+## 28                     7.09                    <NA>
+## 29                 75410310                    <NA>
+## 30                  1995636                    <NA>
+## 31                    80.27                    <NA>
+## 32                  4335214                    <NA>
+## 33                    44765                    <NA>
+## 34                     1.15                    <NA>
+## 35                     1.22                    <NA>
+## 36                     6.42                    <NA>
+## 37                   100.33                    <NA>
+## 38                     0.01                    <NA>
+## 39                     0.28                    <NA>
+## 40                      100                    <NA>
+## 41                     3832                    <NA>
+## 42                  4260450                    <NA>
+## 43                  4286617                    <NA>
+## 44                 43685904                    <NA>
+## 45                   955877                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 54427039                    <NA>
+## 49                   359051                    <NA>
+## 50                        0                    <NA>
+## 51                     0.66                    <NA>
+## 52                     10.9                    <NA>
+## 53                  5933625                    <NA>
+## 54                        0                    <NA>
+## 55                  3492582                    <NA>
+## 56                     1.76                    <NA>
+## 57                     0.16                    <NA>
+## 58                        0                    <NA>
+## 59                 54344793                    <NA>
+## 60                        0                    <NA>
+## 61                     4218                    <NA>
+## 62                     1961                    <NA>
+## 63                 54427039                    <NA>
+## 64               54339594.5                    <NA>
+## 65                        0                    <NA>
+## 66                    82246                    <NA>
+## 67                 54427039                    <NA>
+## 68                    980.5                    <NA>
+## 69                108679189                    <NA>
+## 70                  4879843                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 54427039                    <NA>
+## 76                        0                    <NA>
+## 77                 54427039                    <NA>
+## 78                     2434                    <NA>
+## 79                        0                    <NA>
+## 80                     4.39                    <NA>
+## 81                    55645                    <NA>
+## 82                       18                    <NA>
+## 83                     0.05                    <NA>
+## 84                      nan                    <NA>
+## 85                     4.48                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                108854096                    <NA>
+## 90                        0                    <NA>
+## 91                108854096                    <NA>
+## 92                      487                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  4824180                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  4775228                    <NA>
+## 99                108854078                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 2154031                    <NA>
+## 104                       0                    <NA>
+## 105             44.71355742                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                53877618                    <NA>
+## 111                33123230                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                31340159                    <NA>
+## 116               120495038                    <NA>
+##                         V23                     V24
+## 1              SRR2121788_1            SRR2121788_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      fail                    fail
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      pass                    pass
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     fail                    fail
+## 13                 82750449                82750449
+## 14                     pass                    pass
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       47                      47
+## 18              43.56442006             44.95245995
+## 19    SRR2121788_1.fastq.gz   SRR2121788_2.fastq.gz
+## 20                     warn                    pass
+## 21                     pass                    pass
+## 22                 73771492                    <NA>
+## 23                    89.15                    <NA>
+## 24                     1.85                    <NA>
+## 25                  3489058                    <NA>
+## 26                  3962243                    <NA>
+## 27                     4.79                    <NA>
+## 28                     4.22                    <NA>
+## 29                 82750449                    <NA>
+## 30                  1527656                    <NA>
+## 31                    80.81                    <NA>
+## 32                  7285454                    <NA>
+## 33                    80392                    <NA>
+## 34                     1.13                    <NA>
+## 35                      1.3                    <NA>
+## 36                     5.61                    <NA>
+## 37                   101.18                    <NA>
+## 38                     0.01                    <NA>
+## 39                     0.16                    <NA>
+## 40                      101                    <NA>
+## 41                     6602                    <NA>
+## 42                  7202217                    <NA>
+## 43                  7198460                    <NA>
+## 44                 59617353                    <NA>
+## 45                   703236                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 73771492                    <NA>
+## 49                   317451                    <NA>
+## 50                        0                    <NA>
+## 51                     0.43                    <NA>
+## 52                    12.19                    <NA>
+## 53                  8991826                    <NA>
+## 54                        0                    <NA>
+## 55                  4141626                    <NA>
+## 56                     0.95                    <NA>
+## 57                      0.2                    <NA>
+## 58                        0                    <NA>
+## 59                 73629819                    <NA>
+## 60                        0                    <NA>
+## 61                     7405                    <NA>
+## 62                     2913                    <NA>
+## 63                 73771492                    <NA>
+## 64               73620957.5                    <NA>
+## 65                        0                    <NA>
+## 66                   141673                    <NA>
+## 67                 73771492                    <NA>
+## 68                   1456.5                    <NA>
+## 69                147241915                    <NA>
+## 70                  5080844                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 73771492                    <NA>
+## 76                        0                    <NA>
+## 77                 73771492                    <NA>
+## 78                     2250                    <NA>
+## 79                        0                    <NA>
+## 80                     3.36                    <NA>
+## 81                    58038                    <NA>
+## 82                       58                    <NA>
+## 83                     0.04                    <NA>
+## 84                      nan                    <NA>
+## 85                     3.44                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                147543042                    <NA>
+## 90                        0                    <NA>
+## 91                147543042                    <NA>
+## 92                      823                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  5022748                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  4958480                    <NA>
+## 99                147542984                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 3756137                    <NA>
+## 104                       0                    <NA>
+## 105             45.65729376                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                75554738                    <NA>
+## 111                46247590                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                39923831                    <NA>
+## 116               165482296                    <NA>
+##                         V25                     V26
+## 1              SRR2121789_1            SRR2121789_2
+## 2                      pass                    pass
+## 3                         0                       0
+## 4                      fail                    warn
+## 5                        51                      51
+## 6     Sanger / Illumina 1.9   Sanger / Illumina 1.9
+## 7                      pass                    fail
+## 8                      pass                    pass
+## 9                        51                      51
+## 10  Conventional base calls Conventional base calls
+## 11                     pass                    pass
+## 12                     fail                    fail
+## 13                 92454136                92454136
+## 14                     pass                    fail
+## 15                     fail                    fail
+## 16                     warn                    warn
+## 17                       47                      48
+## 18               42.6643141             57.36052687
+## 19    SRR2121789_1.fastq.gz   SRR2121789_2.fastq.gz
+## 20                     pass                    fail
+## 21                     pass                    pass
+## 22                 82764590                    <NA>
+## 23                    89.52                    <NA>
+## 24                     1.77                    <NA>
+## 25                  3797776                    <NA>
+## 26                  4252397                    <NA>
+## 27                      4.6                    <NA>
+## 28                     4.11                    <NA>
+## 29                 92454136                    <NA>
+## 30                  1639373                    <NA>
+## 31                    81.62                    <NA>
+## 32                  8581902                    <NA>
+## 33                    97422                    <NA>
+## 34                     1.15                    <NA>
+## 35                     1.25                    <NA>
+## 36                     4.53                    <NA>
+## 37                   101.22                    <NA>
+## 38                     0.01                    <NA>
+## 39                     0.15                    <NA>
+## 40                      101                    <NA>
+## 41                     7593                    <NA>
+## 42                  8487777                    <NA>
+## 43                  8476887                    <NA>
+## 44                 67556146                    <NA>
+## 45                   890704                    <NA>
+## 46                        0                    <NA>
+## 47                        0                    <NA>
+## 48                 82764590                    <NA>
+## 49                   405340                    <NA>
+## 50                        0                    <NA>
+## 51                     0.49                    <NA>
+## 52                    12.28                    <NA>
+## 53                 10165077                    <NA>
+## 54                        0                    <NA>
+## 55                  3747323                    <NA>
+## 56                     1.08                    <NA>
+## 57                      0.2                    <NA>
+## 58                        0                    <NA>
+## 59                 82605166                    <NA>
+## 60                        0                    <NA>
+## 61                     8139                    <NA>
+## 62                     3585                    <NA>
+## 63                 82764590                    <NA>
+## 64               82595234.5                    <NA>
+## 65                        0                    <NA>
+## 66                   159424                    <NA>
+## 67                 82764590                    <NA>
+## 68                   1792.5                    <NA>
+## 69                165190469                    <NA>
+## 70                  7013490                    <NA>
+## 71                        0                    <NA>
+## 72                        0                    <NA>
+## 73                        0                    <NA>
+## 74                        0                    <NA>
+## 75                 82764590                    <NA>
+## 76                        0                    <NA>
+## 77                 82764590                    <NA>
+## 78                     3646                    <NA>
+## 79                        0                    <NA>
+## 80                     4.15                    <NA>
+## 81                    57600                    <NA>
+## 82                       50                    <NA>
+## 83                     0.03                    <NA>
+## 84                      nan                    <NA>
+## 85                     4.24                    <NA>
+## 86                        0                    <NA>
+## 87                        0                    <NA>
+## 88                        0                    <NA>
+## 89                165529230                    <NA>
+## 90                        0                    <NA>
+## 91                165529230                    <NA>
+## 92                      951                    <NA>
+## 93                      nan                    <NA>
+## 94                        0                    <NA>
+## 95                  6955840                    <NA>
+## 96                        0                    <NA>
+## 97                        0                    <NA>
+## 98                  6869584                    <NA>
+## 99                165529180                    <NA>
+## 100                       0                    <NA>
+## 101                       0                    <NA>
+## 102                     nan                    <NA>
+## 103                 4158307                    <NA>
+## 104                       0                    <NA>
+## 105             46.21716065                    <NA>
+## 106                       0                    <NA>
+## 107                       0                    <NA>
+## 108                       0                    <NA>
+## 109                       0                    <NA>
+## 110                86661345                    <NA>
+## 111                52396728                    <NA>
+## 112                       0                    <NA>
+## 113                       0                    <NA>
+## 114                       0                    <NA>
+## 115                44292640                    <NA>
+## 116               187509020                    <NA>
+```
+
+>>>>>>> de783c514ac0264374f59bd7c37d903c1ef21211
 # **Differentially Expressed Sequence Identification**
 
 Programs Used
