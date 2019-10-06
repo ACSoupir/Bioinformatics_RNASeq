@@ -1,0 +1,1006 @@
+---
+title: "RNA Seq for STAT736"
+author: "Alex Soupir"
+date: "9/10/2019"
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# **Background**
+
+For STAT736-Fall-2019, we are analyzing the RNA-Seq from the publication [Genome-wide analysis of p53 transcriptional programs in B cells upon exposure to genotoxic stress in vivo.](https://www.ncbi.nlm.nih.gov/pubmed/26372730?dopt=Abstract) We are only using the [sequences](https://trace.ncbi.nlm.nih.gov/Traces/study/?acc=SRP061386) *B cells from spleen* and not the *non-B cells from spleen* from the SRA Run Selector on NCBI.
+
+The mice were exposed to whole-body ionizing radiation and sequences were extracted from both Bcells and non-B cells from the spleens of the mice. Two genotypes of mice were used: mice with p53 knocked out and the wild-type C57/Bl6. There were 4 different group combinations including the 2 different genotypes; each genotype was subjected to the ionizing radiation as well as control/mock.
+
+```{r experimental_design, echo=FALSE}
+library(knitr)
+experimental_design = data.frame('Genotype' = c('p53', 'C57/Bl6', 'p53', 'C57/Bl6'), 'Treatment' = c('Mock', 'Mock', 'IR', 'IR'))
+rownames(experimental_design) = c('Group 1', 'Group 2', 'Group 3', 'Group 5')
+
+library(kableExtra)
+library(reticulate)
+kable(experimental_design[1:4,1:2]
+      #, "latex"
+      , caption = 'Treatment groups of the mice that were either controls or treated with ionizing radiation to determine reaction of p53.'
+      #,booktabs = T
+      ) %>%
+  kable_styling(latex_options = c("striped", "repeat_header"))
+```
+
+The pipeline used in this analysis used **conda** on South Dakota State University's High Performance Computing cluster to run the programs **FastQC**, **Trimmomatic**, and **Tophat**. 
+
+This is different than previous RNA-Seq analyses where I used my workstation pc with **Ubuntu 18.04** to run **FastQC**, **Trimmomatic**, **HiSat2**, **HTSeq**, and **DESeq2** locally. Also, the previous RNA-Seq alayses were of Soybean with treatment combinations of mycorrhizae and rhizobia inoculation.
+
+# **Cleaning Data**
+
+## Programs used?
+
++ FastQC
++ Trimmomatic 0.39
++ Bowtie 2.2.5.0
++ Tophat 2.1.1
++ STAR
++ Cufflinks
++ Kraken2
++ MultiQC
++ featureCount
+
+### Picking the right node
+
+To find a node that we can use on our own, we need to see which nodes are already allocated to jobs and which ones are idle. To do this, we can run **sinfo**. We want to pick one of the nodes that are marked 'idle' so we get the whole thing and we aren't interrupting someone elses job. For the sake of this exercise, lets work on **big-mem**.
+
+Once a node that is idle has been found, you can *ssh* into it by typing **ssh -X big-mem00#** where # is the node number.
+```{bash, eval=FALSE}
+ssh -X big-mem005
+```
+
+Once on the node, the modules will have to be pulled from the shared folder again, otherwise we will be left with very basic ones. **NOTE:** if running programs that are in a personal folder such as miniconda (these examples), it is not necessary to add the other modules.
+
+```{bash, eval=FALSE}
+module use /cm/shared/modulefiles_local/
+```
+
+After loading the modules you can use it just as you would any other command line.
+
+### Creating slurm scripts
+
+When running on a cluster, it can sometime be difficult to find open nodes with the resources needed to run the jobs that we have. Making a slurm script is really easy. Fist we make a new file with the *touch* command.
+
+```{bash, eval=FALSE}
+touch commands.slurm
+```
+
+Now in our directory we have the file **commands.slurm** which we can edit to hold our code in. We can edit it with the *vi* command.
+
+```{bash, eval=FALSE}
+vi commands.slurm
+```
+
+We have a few things that we need to put in the file header so slurm knows what to do with our commands.
+
+```{bash, eval=FALSE}
+#!/bin/bash
+
+#SBATCH --job-name=example
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=10
+#SBATCH --output=job-%j-%N.log
+#SBATCH --partition=bigmem
+#SBATCH --time=10:00:00
+```
+
+When we break this down, we see *--job-name* which is what we will see when we look at whats running later, *--nodes* is the number of nodes we have, *--ntasks-per-node* is the number of cores that we are requesting to have allocated, *--output* is the output log file of the job (here it names the output file with the job number and the node that we used), *--partition* here is requesting a big-mem node but **compute** can also be used, and finally *--time* is how long we are requesting the allocation for. 
+
+If the time runs out before the job is done I believe that it just kills the job even if not finished so we need to think a little about how much time to set. If the time is set too low, the job is killed and if the time is set too long, we may face issues with getting the node allocated to us.
+
+To submit a job we can use *sbatch commands.slurm* and then we have the job ID. To check the status of our submission we use *sbatch* and then it shows all of the submitted jobs and how long they have been running along with the name that we set in the script.
+
+## Acquiring sequences
+
+To download the sequences from the sequence read archive (SRA), the SRA Toolkit was used. The downloading of the files took a very long time, so this was left to run over night. The **--gzip** was used to keep the files a relatively small, although this can be left out to download uncompressed files, and **--split-files** was used to split the forward read from the reverse read for paired end read trimming through **Trimmomatic**.
+
+```{bash, eval=FALSE}
+~/tools/sratoolkit.2.9.6-1-centos_linux64/bin/fastq-dump --gzip --split-files SRR2121770
+```
+
+This is an example of the single file, but the above code needed to be ran for all of the following SRA numbers:
+
++ SRR2121770
++ SRR2121771
++ SRR2121774
++ SRR2121775
++ SRR2121778
++ SRR2121779
++ SRR2121780
++ SRR2121781
++ SRR2121786
++ SRR2121787
++ SRR2121788
++ SRR2121789
+
+The results from downloading with **--split-files** gives 2 files per SRR, as mentioned before, one forward and one reverse. The suffix of the split files is one with **\_1.fastq.gz** and another with **\_2.fastq.gz**.
+
+## FastQC
+
+FastQC can be run on all of the read files by using the wild card (\*) as in **\*.fastq.gz**. This prevents the need to hard code each individual read file into a FastQC command, which saves a lot of time since there are 24 read files in total for these 12 samples.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/fastqc *.fastq.gz
+```
+
+The output from running FastQC is a zipped folder and an HTML file for each of the **\fastq.gz** files in the folder. The HTML document looks something like this:
+
+![FastQC of Raw SRR2121770_1.fastq.gz Read](./TopFastQCRaw.PNG)
+
+This is just the top of the file, and every category under the **Summary** heading has a graph that shows how the read quality looks for that particular metric. These reports can give insight into whether the reads are of decent quality or if the quality is poor. 
+
+The raw reads we have here all passed for adapter content and sequence length distribution and everything failed per base sequence content. SRR2121770, SRR2121771, SRR2121774, SRR2121775, SRR2121788, SRR2121781-2, and SRR2121789-1 were fairly decent quality reads. SRR2121778, SRR2121779, SRR2121780, SRR2121786, SRR2121787, SRR2121781-1, and SRR2121789-2 were of fairly lower quality (failing 3 or more in both reads. All of them failed both per base sequence quality and per tile sequence quality. 
+
+### MultiQC
+
+First lets install **multiqc** with conda. The command for this is ***conda install \-c bioconda multiqc***.
+
+When that is finished, we can run MultiQC in the folder with the QC files (they should be moved into a folder alone so things don't get cluttered later on in the analyses).
+
+```{bash, eval=FALSE}
+~/miniconda/bin/multiqc .
+```
+
+When MultiQC is finished running, there will be a new folder called **multiqc_data** where the summaries are stored. Now lets go back up a level where our raw data folder and fastqc folder is and make a new folder for all of our MultiQC data. We will copy the FastQC output from MultiQC to this new folder.
+
+```{bash, eval=FALSE}
+mkdir MultiQC_All
+
+cp RawQC/multiqc_data/multiqc_fastqc.txt MultiQC_All/
+```
+
+## Trimming with Trimmomatic
+
+Conda was used again to run Trimmomatic. This isn't as easy as using the wildcard like with FastQC because each output has to be personalized for the read files that are input into Trimmomatic. Also, we have to make sure that the adapter sequences are in the same folder that we are running so we can refer to them easily when calling the Trimmomatic program. In this case, we are using the TruSeq3-PE-2.fa adapter sequences For example:
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/trimmomatic PE SRR2121770_1.fastq.gz SRR2121770_2.fastq.gz 770_fp.fq.gz 770_fu.fq.gz 770_rp.fq.gz 770_ru.fq.gz ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:2keepBothReads LEADING:3 TRALING:3 MINLEN:36 &
+```
+
+This would be repeated for each of the pairs (12 in total). We are trimming paired-end reads with the TruSeq3-PE-2 adapters. We are chopping off the first and last 3 bases and if we end up with a sequence less than 36 bases, we get rid of it. We want to make sure that there are enough bases in a read to work with. These parameters can be tweaked for possibly better end results with less being discarded. When Trimmomatic is finished running, it will out put the total number of reads, the total number from both the forward and reverse reads that are kept, the number of only forward reads kept, the number of only reverse reads kept, and the number of discarded reads.
+
+The highest number of reads dropped was from trimming SRR2121786, where 20.55% dropped. Most reads were between 5% and 10% dropped. SRR2121786, SRR2121787, and SRR2121779 had sequence drops greater than 15%.
+
+The trimmed reads can be analyzed again with FastQC to see how well the trimming worked to make the file better quality. After running FastQC on the trimmed files we see that the quality of those that were really bad quality were improved. There were a few different metrics throughout all of the files that bounced from a warning before the failing, or from passing before to a warning, and so forth, overall creating better quality read files.
+
+## Alignment
+
+### Using Tophat
+
+Tophat can be installed using the same **conda install** (***conda install \-c bioconda tophat***). When this is finished installing, then we will need to get the mouse genome from the [Johns Hopkins Univeristy Center for computational BIology](http://ccb.jhu.edu/software/tophat/igenomes.shtml). The version of the mouse genome that I am using here is the [NCBI build37.2](ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Mus_musculus/NCBI/build37.2/Mus_musculus_NCBI_build37.2.tar.gz). Instead of downloading this from the website and having to move it to the cluser, I will just download it using wget into the folder that has the raw reads, trimmed reads, and the FastQC files.
+
+```{bash, eval=FALSE}
+wget ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Mus_musculus/NCBI/build37.2/Mus_musculus_NCBI_build37.2.tar.gz
+```
+
+This will take a long time to download because the file is a little less than 16GB zipped.
+
+We notice here that we have a zipped tar file. To make this file easier to use, lets unzip it.
+
+```{bash, eval=FALSE}
+tar zxvf Mus_muculus_NCBI_build37.2.tar.gz
+```
+
+Since Tophat is requiring **\*.bt21** files (large index) and the files downloaded for the genome above are only small index files, we have to create a large index using **bowtie2-build**. For this, lets navigate to the WholeGenomeFasta folder within the extracted folder and then run **bowtie2-build**.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/bowtie2-build --large-index genome.fa genome
+```
+
+This process took about 26 minutes to run. Now lets copy the index files to a folder close to our reads so we can access them easier, rather than having to refer to the longer path where we build them. After they are copied to a new folder closer to our working directory, I went ahead and unzipped the trimmed read files to try and make the Tophat faster but it turned out not to work. The multicore call with **\-p** didn't use more cores than 1 until **bowtie2-align-s**, then 20 cores were used.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/tophat --no-converage-search -p 20 -G Mus_musculus/NCBI/build37.2/Annotation/Archives/archive-2015-07-17-14-32-40/Genes/genes.gtf -0 770_thout ./Index/genome 770_fp.fq.gz 770_rp.fq.gz 770_fu.fq 770_ru.fq
+```
+
+This run took almost 3 hours to complete.. Running with 80 cores rather than 20 cores took just 4 minutes less, so the whole process must be limited by a single core and the core clock speed. The process does use close to 8,000% at its peak so there is a benefit to multicore, just isn't very scalable.
+
+### Using STAR
+
+STAR can be installed the same way as the previous programs with **conda install** (***conda install \-c bioconda star***). In order to run STAR, we need to creaate indices just like with tophat, but STAR has this built in. I'm going to be using the same genome and GTF file as previously downloaded, but Dr. Ge uses a different zipped genome from the *gencode* database.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/STAR \
+--runThreadN 80 \
+--runMode genomeGenerate \
+--genomeDir starIndex \
+--genomeFastaFiles Index/genome.fa \ #same when we made the bowtie indices 
+--sjdbGTFfile Mus_musculus/NCBI/build37.2/Annotation/Archives/archive-2015-07-17-14-32-40/Genes/genes.gtf
+```
+
+With the index files made, we can start aligning with STAR. It's important here than we only pick the paired end reads and not use all of the reads. Tophat is able to use all 4 reads but STAR doesn't allow that, so we need to make sure that we feed in the large files from trimming.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/STAR --runThreadN 80 --genomeDir starIndex --readFilesIn 770_fp.fq 770_rp.fq --outFilterIntronMotifs RemoveNoncanonical --outFileNamePrefix 2121770 --outSAMtype BAM SortedByCoordinate
+```
+
+## Assembling transcripts with Cufflinks
+
+Once STAR is done running, we can assemble the transcripts with Cufflinks. This can also be installed with **conda install** (***conda install \-c bioconda cufflinks***).
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/cufflinks -p 20 -o SRR2121771_clout --library-type fr-firststrand 2121770Aligned.sortedByCoord.out.bam
+```
+
+## Checking for Contamination
+
+### PhiX contamination
+
+Now we will look at what kind of contamination we are looking at. When samples are sequenced with Illumina, a PhiX control is run along side them. This control is for cluster generation, sequencing, alignment, and calibration for cross-talk matrix generation. We will use Bowtie to create a file to determine the PhiX contamination level.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/bowtie2 -p 20 -x PhiX/Illumina/RTA/Sequence/Bowtie2Index/genome \
+-1 TrimmedReads/770_fp.fq  -2 TrimmedReads/770_rp.fq -S phix.sam &> PhiXout/SRR2121770_phix.out
+```
+
+When the job is done running, the output file will show how much PhiX contamination we have. For example, lookin at the **SRR2121770_phix.out** created above, we see that 0.11% of the reads aligned with PhiX. The lower this value the better.
+
+### rRNA Sequences
+
+To retreive the rRNA sequences for mouse, we need to search the taxonomy database on NCBI for *Mus musculus*. Click on *Mus musculus* on the next page, and then the top *Mus musculus* at the head of the list. Now, select the top subtree link in the **Nucleotide** database. Select rRNA sequences on the left side of the page and download full list just downloading with Send > Complete Record > File > FASTA > Create File. Drag the file using WinSCP to the raw folder on the cluster and rename it to rRNA.fa.
+
+We are going to need to install **bwa** with conda in order to get the alignments to work. This can be done with ***conda install -c bioconda bwa***. Following this, we will need to make indixes for the rRNA that we downloaded. To make this more clean, lets make a directory for the rRNA sequences that we downloaded and the indices that we make.
+
+```{bash, eval=FALSE}
+mkdir rRNA
+```
+
+Then we move the **rRNA.fa** to the new **rRNA** folder with WinSCP and then we can run the bwa.
+
+```{bash, eval=FALSE}
+time ~/miniconda2/bin/bwa mem -t 20 rRNA/rRNA.fa TrimmedReads/770_fp.fq TrimmedReads/770_rp.fq > rnaAlign/770_rna.sam
+```
+
+When we are done creating the new *\*.sam* files for all of the forward/reverse read combinations, we can use samtools to convert the *\*.sam* file to *\*.bam* files which are essentially the same file just that *sam* is easier for us to look at while *bam* is binary. Samtools can be installed with ***conda install \-c bioconda samtools***.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/samtools view -@ 10 -bS -o rnaAlign/770_rna.bam rnaAlign/770.sam
+```
+
+Now in the rnaAlign folder we have our sam and bam file for each of the libraries. Lets create an output file with *flagstat*.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/samtools flagstat -@ 10 rnaAlign/770_rna.out
+```
+
+Wihtin this file we will be able to see the summary of our alignments to the rRNA file that we downloaded from NCBI.
+
+```{bash, eval=FALSE}
+#From 770_rna.out
+205559289 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 secondary
+85 + 0 supplementary
+0 + 0 duplicates
+4265179 + 0 mapped (2.07% : N/A)
+205559204 + 0 paired in sequencing
+102779602 + 0 read1
+102779602 + 0 read2
+4151684 + 0 properly paired (2.02% : N/A)
+4187608 + 0 with itself and mate mapped
+77486 + 0 singletons (0.04% : N/A)
+4222 + 0 with mate mapped to a different chr
+1026 + 0 with mate mapped to a different chr (mapQ>=5)
+```
+
+### Bacterial contamination
+
+In order to find out the contamination, we need to install Kraken2 with ***conda install \-c bioconda kraken2*** and download a pre-built database containing bacteria, archaea, and viral sequences. The database we are going to download only contains about 5% of k-mers from the original database (but directions are sort of lacking to build an entirely new database). More information can be found at https://ccb.jhu.edu/software/kraken/ for the pre-built databases.
+
+Using the code in the next chunk will download the 8GB database and then extract the files so we can use them with the **Kraken2** program. Lets do this in the main project folder.
+
+```{bash, eval=FALSE}
+wget ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken2_v2_8GB_201904_UPDATE.tgz
+
+tar xzf minikraken2_v2_8GB_201904_UPDATE.tgz
+```
+
+Now lets make a directory for the output.
+
+```{bash, eval=FALSE}
+mkdir krakenOut
+```
+
+We can call **Kraken** with the extracted database folder and point it to the location of out paired end reads from trimming and to the output folder that we just created for the outputs.
+
+```{bash, eval=FALSE}
+~/miniconda2/bin/kraken2 --db minikraken2_v2_8GB_201904_UPDATE/ --output krakenOut/770.out --threads 10 --paired TrimmedReads/770_fp.fq TrimmedReads/770_rp.fq
+```
+
+When Kraken is done running, it will print out the number (and percentage) of reads that were classified. In this case, we have used 102779602 sequences, of which 19142843 sequences were classified (18.63%) and 83636759 sequences were unclassified (81.37%). My interpretation of this is that 18.63% of the reads are possibly from microbial cell contamination.
+
+## Counting Transcripts
+
+Since we have the **bam** files from the alignments of the different samples, we can count the features for each and get the transcipt counts using featureCounts form ***conda install \-c bioconda/label/cf201901 subread***. The genome and annotations that we previously downloaded were from genome **mm9** so we have to specify to *featureCounts* what we want to actually count. FeatureCounts defaults to using **gene_id** which our output bam files don't have described correctly for *featureCounts* to read them. This is a single line of code because we can use a wildcard to run through all of the **bam** files. 
+
+```{bash, eval=FALSE}
+#Move to the Star Alignment output folder for a working directory
+cd StarOut
+
+~/miniconda2/bin/featureCounts -a /gpfs/scratch/alex.soupir/Mus/raw/Mus_musculus/NCBI/build37.2/Annotation/Archives/archive-2015-07-17-14-32-40/Genes/genes.gtf -g 'transcript_id' -o readCounds.txt *bam
+```
+
+With the files that we are working with, this will take between 3.5 minutes to 5 minutes per **bam** file. The output will be a file that can be imported into excel and saved as csv which we then can work with in R.
+
+### Final QC of cleaning the data
+
+Lets look at the data that we have collected from all of the MultiQC runs that we had with initial FastQC, Trimmomatic, STAR alignment, PhiX contamination, rRNA contamination, and the final feature counts.
+
+```{r}
+qc = read.csv('Whole Data QC.csv', header=TRUE, na.strings="")
+kable(qc) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "800px")
+```
+
+# **Differentially Expressed Sequence Identification**
+
+Programs Used
+
++ R
++ RStudio
+
+Packages
+
++ readr (***install.packages('readr')***)
++ limma (***BiocManager::install('limma')***)
++ DESeq2 (***BiocManager::install('DESeq2')***)
++ dplyr (***install.packages("dplyr")***)
++ ggplot2 (***install.packages("ggplot2")***)
++ gplots (***install.packages("gplots")***)
++ Annotations (***BiocManager::install('AnnotationDbi')***)
++ org.Hs.eg.db (***BiocManager::install('org.Hs.eg.db')***)
+  + This is for Human
++ org.Mm.eg.db (***BiocManager::install('org.Mm.eg.db')***)
+  + This is for Mouse
++ ggrepel (***install.packages("ggrepel")***)
++ ReportingTools (***BiocManager::install('ReportingTools')***)
++ GO.db (***BiocManager::install('GO.db')***)
++ GOstats (***BiocManager::install('GOstats')***)
++ pathview (***BiocManager::install('pathview')***)
++ gage (***BiocManager::install('gage')***)
++ gageData (***BiocManager::install('gageData')***)
++ select (***BiocManager::install('Select')***)
+
+With these, you most certainly will have to step through each and install extra things when you start calling the packages. Take it step by step to ensure that each dependency is installed. 
+
+## Analyzing Reads Counts
+
+When the count file is completed, we can import it into R and start working with it to determine differentially expressed genes. First we will import it into R
+
+```{r, message=FALSE}
+library(limma)
+library(DESeq2)
+library(dplyr)
+library(readr)
+
+countData = read_csv("readCounts.csv", skip = 1)
+```
+
+This gives us our dataframe from out featureCounts program, but if we look at the data we see that featureCounts added some extra information that characterizes each gene_id.
+
+```{r}
+head(countData)
+```
+
+We also need to set out row names to the gene_id. We will do some data frame manipulation and then look at the data again.
+
+```{r}
+countData = as.data.frame(countData)
+rownames(countData) = countData$Geneid
+countData = countData[,-c(1:6)]
+head(countData)
+```
+
+### Quick Data Exploration
+
+```{r}
+dim(countData)
+```
+
+```{r}
+summary(countData)
+```
+
+Let's also go ahead and change the names to describe out data a little better.
+
+```{r}
+columns = c('Trp53m_mock_1', 'Trp53m_mock_2', 'Trp53m_4h7Gy_1', 'Trp53m_4h7Gy_2', 'Trp53p_mock_1', 'Trp53p_mock_2', 'Trp53p_mock_3', 'Trp53p_mock_4', 'Trp53p_4h7Gy_1', 'Trp53p_4h7Gy_2', 'Trp53p_4h7Gy_3', 'Trp53p_4h7Gy_4')
+colnames(countData) = columns
+```
+
+Here we have to make sure that we convert the *+/+* and *-/-* to characters. These characters
+
+```{r}
+par(mar=c(8,4,4,1)+0.1)
+barplot( colSums(countData)/1e6, col="green",las=3,main="Total read counts (millions)", ylab="Total read counts in millions")
+```
+
+```{r}
+hist(countData[,1], br=200, xlab="Number of Reads Counts per Feature", main="Histogram of Read Counts for Trp53-/- Mock")
+```
+
+We can see that our count data is highly skewed to the right. This is a great case for using **log** transformation!
+
+```{r}
+logCountData = log2(1+countData)
+par(mfrow = c(1, 2), mar=c(8,4,4,1))  # two columns
+hist(logCountData[,1], main="Histogram of Log Read Counts", xlab="Log transformed counts")
+boxplot(logCountData,las=3, main="Boxplot of Log Read Counts")
+```
+
+```{r }
+x <- logCountData
+myColors = rainbow(dim(x)[2])
+plot(density(x[,1]),col = myColors[1], lwd=2,
+     xlab="Expresson values", ylab="Density", main= "Distribution of transformed data",
+     ylim=c(0, max(density(x[,1])$y)+.02 ) )
+  
+for( i in 2:dim(x)[2] )
+lines(density(x[,i]),col=myColors[i], lwd=2)
+legend("topright", cex=1.1,colnames(x), lty=rep(1,dim(x)[2]), col=myColors )	
+```
+
+```{r}
+plot(logCountData[,1],logCountData[,2], xlab="Trp53-/- mock replication 1", ylab="Trp53-/- mock replication 2")
+```
+
+### Filtering, Normalization, and Trasformation using DESeq2
+
+``` {r }
+detectGroups <- function (x){  # x are col names
+  tem <- gsub("[0-9]*$","",x) # Remove all numbers from end
+  #tem = gsub("_Rep|_rep|_REP","",tem)
+  tem <- gsub("_$","",tem); # remove "_" from end
+  tem <- gsub("_Rep$","",tem); # remove "_Rep" from end
+  tem <- gsub("_rep$","",tem); # remove "_rep" from end
+  tem <- gsub("_REP$","",tem)  # remove "_REP" from end
+  return( tem )
+}
+
+groups = as.character ( detectGroups( colnames( countData ) ) )
+groups
+
+```
+
+```{r}
+colData = cbind(colnames(countData), groups )
+colData
+
+```
+
+```{r}
+colData = as.data.frame(cbind(colnames(countData), groups ))
+sampleID = as.factor( c(1:2,1:2,1:4,1:4) )
+colData = cbind(data.frame(colData),sampleID)
+
+colData
+str(colData)
+```
+
+Creating a DESeq Dataset
+
+```{r message = FALSE }
+dds = DESeqDataSetFromMatrix(countData=countData,
+                             colData=colData,
+                             design= ~ sampleID+groups)   # note that the study design is changed.
+dds = DESeq(dds)  # main function
+nrow(dds)
+```
+
+Filtering
+
+```{r}
+dds <- dds[ rowSums(counts(dds)) > 5, ]
+nrow(dds)
+```
+
+Regularized log transformation
+
+```{r}
+rld <- rlog(dds, blind = FALSE)
+head(assay(rld), 3)
+```
+
+Variance Stabilizing Transformation
+
+```{r}
+vsd <- vst(dds, blind = FALSE)
+head(assay(vsd), 3)
+```
+
+For the log2 approach, we need to first estimate size factors to account for sequencing depth, and then specify normalized=TRUE. Sequencing depth correction is done automatically for the rlog and the vst.
+
+```{r}
+dds <- estimateSizeFactors(dds)
+sizeFactors(dds)
+```
+
+We will first look at the log transformed data
+
+```{r}
+slog <- log2(counts(dds, normalized=TRUE)+1)
+head(slog)
+```
+
+```{r}
+par(mfrow = c(1, 3))  # 3 columns
+plot(slog[,1],slog[,2])
+plot(assay(rld)[,1],assay(rld)[,2])
+plot(assay(vsd)[,1],assay(vsd)[,2])
+```
+
+```{r}
+par(mfrow = c(1, 3))  # 3 columns
+slog <- log2(counts(dds, normalized=TRUE)+1)
+plot(slog[,1],slog[,2])
+slog <- log2(counts(dds, normalized=TRUE)+4)
+plot(slog[,1],slog[,2], xlim=c(0,20))
+slog <- log2(counts(dds, normalized=TRUE)+20)
+plot(slog[,1],slog[,2], xlim=c(0,20))
+```
+
+```{r}
+library("dplyr")
+library("ggplot2")
+
+df <- bind_rows(
+  as_data_frame(slog[,1:2]) %>%
+         mutate(transformation = "log2(x + 1)"),
+  as_data_frame(assay(rld)[, 1:2]) %>% mutate(transformation = "rlog"),
+  as_data_frame(assay(vsd)[, 1:2]) %>% mutate(transformation = "vst"))
+  
+colnames(df)[1:2] <- c("x", "y")  
+
+ggplot(df, aes(x = x, y = y)) + geom_hex(bins = 80) +
+  coord_fixed() + facet_grid( . ~ transformation)
+
+```
+
+### Exploratory Data Analysis
+
+PCA plot
+
+```{r}
+plotPCA(rld, intgroup = c("groups")) + theme(aspect.ratio=1)
+```
+
+A prettier PCA plot created with GGPlot2
+
+```{r}
+pca.object <- prcomp(t(assay(rld))) # PCA 
+pcaData = as.data.frame(pca.object$x[,1:2]); 
+pcaData = cbind(pcaData,detectGroups(colnames(assay(rld)) ))
+colnames(pcaData) = c("PC1", "PC2", "Type")
+percentVar=round(100*summary(pca.object)$importance[2,1:2],0)
+#plot
+p=ggplot(pcaData, aes(PC1, PC2, color=Type, shape = Type)) + geom_point(size=5) 
+p=p+xlab(paste0("PC1: ",percentVar[1],"% variance")) 
+p=p+ylab(paste0("PC2: ",percentVar[2],"% variance")) 
+p=p+ggtitle("Principal component analysis (PCA)")+coord_fixed(ratio=1.0)+ 
+    theme(plot.title = element_text(size = 16,hjust = 0.5)) + theme(aspect.ratio=1) +
+    theme(axis.text.x = element_text( size = 16),
+    axis.text.y = element_text( size = 16),
+    axis.title.x = element_text( size = 16),
+    axis.title.y = element_text( size = 16) ) +
+  theme(legend.text=element_text(size=16))
+print(p)
+```
+
+Multidimensional Scaling Plot
+
+```{r}
+dist2 <- function(x, ...)   # distance function = 1-PCC (Pearson's correlation coefficient)
+  as.dist(1-cor(t(x), method="pearson"))
+
+fit = cmdscale( dist2(t(assay(rld))) , eig=T, k=2)
+mdsData <- as.data.frame(fit$points[,1:2]); 
+mdsData <- cbind(mdsData,detectGroups(colnames(assay(rld))) )
+colnames(mdsData) = c("x1", "x2", "Type")
+	
+p<-ggplot(mdsData, aes(x1, x2, color=Type, shape = Type)) + geom_point(size=5) 
+p=p+xlab("Dimension 1") 
+p=p+ylab("Dimension 2") 
+p=p+ggtitle("Multidimensional scaling (MDS)")+ coord_fixed(ratio=1.)+ 
+     theme(plot.title = element_text(hjust = 0.5)) + theme(aspect.ratio=1) +
+	 	 theme(axis.text.x = element_text( size = 16),
+        axis.text.y = element_text( size = 16),
+        axis.title.x = element_text( size = 16),
+        axis.title.y = element_text( size = 16) ) +
+	   theme(legend.text=element_text(size=16))
+print(p)
+```
+
+Creating a heatmap
+
+```{r heatmap, message = FALSE,fig.width=7,fig.height=7}
+library(gplots)
+
+hclust2 <- function(x, method="average", ...)  # average linkage in hierarchical clustering
+  hclust(x, method=method, ...)
+
+n=100 # number of top genes by standard deviation
+
+x = assay(rld)
+if(n>dim(x)[1]) n = dim(x)[1] # max	as data
+
+x = x[order(apply(x,1,sd),decreasing=TRUE),]  # sort genes by standard deviation
+
+x = x[1:n,]   # only keep the n genes
+
+# this will cutoff very large values, which could skew the color 
+x=as.matrix(x[1:n,])-apply(x[1:n,],1,mean)
+cutoff = median(unlist(x)) + 4*sd (unlist(x)) 
+x[x>cutoff] <- cutoff
+cutoff = median(unlist(x)) - 4*sd (unlist(x)) 
+x[x< cutoff] <- cutoff
+	
+groups = detectGroups(colnames(x) )
+groups.colors = rainbow(length(unique(groups) ) )
+
+
+	lmat = rbind(c(5,4),c(0,1),c(3,2))
+	lwid = c(1.5,4)
+	lhei = c(1,.2,4)
+
+
+heatmap.2(x, distfun = dist2,hclustfun=hclust2,
+	 col=greenred(75), density.info="none", trace="none", scale="none", keysize=.5
+	,key=T, symkey=F
+	,ColSideColors=groups.colors[ as.factor(groups)]
+	,margins=c(8,12)
+	,cexRow=1
+	,srtCol=45
+	,cexCol=1.  # size of font for sample names
+	,lmat = lmat, lwid = lwid, lhei = lhei
+	)
+
+```
+
+K-means clustering of genes
+
+```{r kmeans, echo=FALSE, eval=FALSE}
+library(shiny)
+numericInput("k", "How many cars?", 5)
+
+renderPlot({
+ 
+
+
+n=100 # number of top genes by standard deviation
+x = assay(rld)
+if(n>dim(x)[1]) n = dim(x)[1] # max	as data
+x = x[order(apply(x,1,sd),decreasing=TRUE),]  # sort genes by standard deviation
+x = x[1:n,]   # only keep the n genes
+
+	x = 100* x[1:n,] / apply(x[1:n,],1,function(y) sum(abs(y))) # L1 norm
+
+	set.seed(2)
+	input$k=4  # number of clusters
+	
+	cl = kmeans(x,k,iter.max = 50)
+
+	hc <- hclust2(dist2(cl$centers-apply(cl$centers,1,mean) )  )
+	tem = match(cl$cluster,hc$order) #  new order 
+	x = x[order(tem),] ; 	bar = sort(tem)
+	
+	# heatmap with color bar define gene groups
+myheatmap2 <- function (x,bar,n=-1 ) {
+	# number of genes to show
+	ngenes = as.character( table(bar))
+	if(length(bar) >n && n != -1) {ix = sort( sample(1:length(bar),n) ); bar = bar[ix]; x = x[ix,]  }
+
+	# this will cutoff very large values, which could skew the color 
+	x=as.matrix(x)-apply(x,1,mean)
+	cutoff = median(unlist(x)) + 3*sd (unlist(x)) 
+	x[x>cutoff] <- cutoff
+	cutoff = median(unlist(x)) - 3*sd (unlist(x)) 
+	x[x< cutoff] <- cutoff
+	#colnames(x)= detectGroups(colnames(x))
+	 heatmap.2(x,  Rowv =F,Colv=F, dendrogram ="none",
+	 col=greenred(75), density.info="none", trace="none", scale="none", keysize=.3
+	,key=F, labRow = F
+	,RowSideColors = mycolors[bar]
+	,margins = c(8, 24)
+	,srtCol=45
+	)
+
+	 legend.text = paste("Cluster ", toupper(letters)[unique(bar)], " (N=", ngenes,")", sep="")
+	par(lend = 1)           # square line ends for the color legend
+	legend("topright",      # location of the legend on the heatmap plot
+		legend = legend.text, # category labels
+		col = mycolors,  # color key
+		lty= 1,             # line style
+		lwd = 10            # line width
+	)
+
+}
+
+mycolors = sort(rainbow(20))[c(1,20,10,11,2,19,3,12,4,13,5,14,6,15,7,16,8,17,9,18)] # 20 colors for kNN clusters
+myheatmap2(x-apply(x,1,mean), bar,1000)
+
+})
+
+```
+
+### Identification of Differentially Expressed Genes
+
+```{r, message=FALSE}
+dds <- DESeq(dds)
+res <- results(dds, name = "groups_Trp53p_4h7Gy_vs_Trp53m_4h7Gy")
+res
+
+```
+
+DESeq2 uses the Benjamini-Hochberg (BH) adjustment (Benjamini and Hochberg 1995) as implemented in the base R p.adjust function
+
+```{r}
+res <- results(dds, alpha = 0.5, lfcThreshold=.01, name = "groups_Trp53p_4h7Gy_vs_Trp53m_4h7Gy")
+summary(res)
+```
+
+Now lets sort genes by fold change
+
+```{r}
+res <- res[order(abs( res$log2FoldChange), decreasing=TRUE),]
+head(res)
+```
+
+MA Plot
+
+```{r}
+DESeq2::plotMA(res,  ylim = c(-5, 5))
+```
+
+Volcano plot
+
+```{r}
+library(dplyr)
+res1 = as.data.frame(res)
+# add a new column using the mutate function in dplyr
+res1 = mutate(res1, sig=ifelse(res1$padj<0.05, "FDR<0.05", "Not Sig"))
+res1[which(abs(res1$log2FoldChange)<0.5),'sig'] <- "Not Sig"
+
+
+p = ggplot(res1, aes(log2FoldChange, -log10(padj))) +
+  geom_point(aes(col=sig)) +
+  scale_color_manual(values=c("red", "black"))
+p
+```
+
+### Gene Annotations
+
+Plot counts of top gene
+
+```{r}
+topGene <- rownames(res)[1]
+plotCounts(dds, gene = topGene, intgroup=c("groups"))
+```
+
+Here we see an interesting point or our normalized counts under the Trp53p_4h7Gy group that seems to be extremely high, while the other 3 replicates are around 0.5. I cannot get this portion to work, however. I get an error stating that None of the keys entered are valid keys for 'SYMBOL'. 
+
+Let's look at the keys that we have to work with for our ***res*** file from DESeq2
+
+```{r}
+head(row.names(res))
+```
+
+Now we need to find the same key in the Mm database.
+
+```{r, message=FALSE}
+library(AnnotationDbi)
+library(org.Mm.eg.db)
+
+columns(org.Mm.eg.db)
+#key = gsub("\\..*","", row.names(res))
+res$symbol <- gsub("\\..*","", row.names(res))
+
+```
+
+```{r}
+key.en = keys(org.Mm.eg.db, keytype="ENSEMBL")
+head(key.en)
+```
+
+These are ENSEMBL symbols, so we need to designate that when looking for the genes that we have. 
+
+```{r}
+library(biomaRt)
+mart = useMart("ENSEMBL_MART_ENSEMBL")
+
+mart = useDataset('mmusculus_gene_ensembl', mart)
+
+ens = row.names(res)
+ensLookup <- gsub("\\.[0-9]*$", "", ens)
+#ensLookup
+
+annotLookup <- getBM(
+  mart=mart,
+  attributes=c("ensembl_gene_id", "gene_biotype", "external_gene_name","entrezgene_id"),
+  filter="ensembl_gene_id",
+  values=ensLookup,
+  uniqueRows=TRUE)
+
+annotLookup <- data.frame(
+  ens[match(annotLookup$ensembl_gene_id, ensLookup)],
+  annotLookup)
+
+colnames(annotLookup) <- c(
+  "original_id",
+  c("ensembl_gene_id", "gene_biotype", "external_gene_name", "entrezgene_id"))
+
+head(annotLookup)
+head(res)
+
+```
+
+```{r}
+resTemp = as.data.frame(res)
+res.2 = merge(resTemp, annotLookup, by.x = "symbol", by.y= "ensembl_gene_id", all.x=TRUE)
+
+write.csv(res.2, file = "IR_results.csv")
+head(res.2)
+
+```
+
+Let's make a file with just the genes with an adjusted p-value < 0.5
+
+```{r}
+resSig = as.data.frame(subset(res.2,padj<0.5) )
+resSig = resSig[order(resSig$log2FoldChange,decreasing=TRUE),]
+head(resSig)
+print(paste("Number of significant genes:", nrow(resSig), sep=" "))
+
+write.csv(resSig,"IR_SigGenes.csv")
+
+```
+
+Here is a volcano plot that shows the symbol that we created at each point.
+
+```{r}
+library(dplyr)
+res1 = as.data.frame(subset(res.2, !is.na(res.2$padj)))
+# add a new column using the mutate function in dplyr
+res1 = mutate(res1, sig=ifelse(res1$padj<0.5, "FDR<0.05", "Not Sig"))
+res1[which(abs(res1$log2FoldChange)<1),'sig'] <- "Not Sig"
+p = ggplot(res1, aes(log2FoldChange, -log10(pvalue))) +
+  geom_point(aes(col=sig)) +
+  scale_color_manual(values=c("red", "black"))
+p+geom_text(data=filter(res1, padj<0.05), aes(label=symbol))
+```
+
+```{r}
+library(dplyr)
+# Install ggrepel package if needed
+# install.packages("devtools")
+# devtools::install_github("slowkow/ggrepel")
+library(ggrepel) # "repels" overlapping text
+
+p+geom_text_repel(data=filter(res1,  abs(log2FoldChange)>5 | padj < 1e-100 ), aes(label=symbol))
+```
+
+```{r}
+library("ReportingTools")
+htmlRep <- HTMLReport(shortName="report", title="My report",
+                      reportDirectory="./report")
+publish(resSig, htmlRep)
+url <- finish(htmlRep)
+#browseURL(url)
+```
+
+
+
+
+
+
+
+
+
+```{r,echo=FALSE, eval=FALSE}
+library(GO.db)
+library(GOstats)
+res.3 = subset(res.2, !is.na(res.2$entrezgene_id))
+selectedGenes = unique(resSig[resSig$log2FoldChange>0,'entrezgene_id'])  # upregulated genes
+universeGenes =  unique( mapIds(org.Hs.eg.db,
+                     keys=gsub(" ","",res.3$entrezgene_id),  # this is causing problems for mapping
+                     column="ENTREZID",
+                     keytype="SYMBOL",
+                     multiVals="first")
+                    )
+
+
+hgCutoff <- 0.001
+params <- new("GOHyperGParams",
+              geneIds=selectedGenes,
+              universeGeneIds=universeGenes,
+              annotation="org.Hs.eg.db",
+              ontology="BP",
+              pvalueCutoff=hgCutoff,
+              conditional=FALSE,
+              testDirection="over")
+
+hgOver <- hyperGTest(params)
+summary(hgOver)[1:10,]
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
