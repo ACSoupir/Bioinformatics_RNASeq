@@ -389,7 +389,9 @@ countData = read_csv("readCounts.csv", skip = 1)
 This gives us our dataframe from out featureCounts program, but if we look at the data we see that featureCounts added some extra information that characterizes each gene_id.
 
 ```{r}
-head(countData)
+kable(head(countData)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "320px")
 ```
 
 We also need to set out row names to the gene_id. We will do some data frame manipulation and then look at the data again.
@@ -398,7 +400,9 @@ We also need to set out row names to the gene_id. We will do some data frame man
 countData = as.data.frame(countData)
 rownames(countData) = countData$Geneid
 countData = countData[,-c(1:6)]
-head(countData)
+kable(head(countData)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
 ### Quick Data Exploration
@@ -408,7 +412,9 @@ dim(countData)
 ```
 
 ```{r}
-summary(countData)
+kable(summary(countData)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
 Let's also go ahead and change the names to describe out data a little better.
@@ -508,28 +514,38 @@ Regularized log transformation
 
 ```{r}
 rld <- rlog(dds, blind = FALSE)
-head(assay(rld), 3)
+kable(head(assay(rld), 6)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
 Variance Stabilizing Transformation
 
 ```{r}
 vsd <- vst(dds, blind = FALSE)
-head(assay(vsd), 3)
+kable(head(assay(vsd), 6)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
 For the log2 approach, we need to first estimate size factors to account for sequencing depth, and then specify normalized=TRUE. Sequencing depth correction is done automatically for the rlog and the vst.
 
+Size Factor
+
 ```{r}
 dds <- estimateSizeFactors(dds)
-sizeFactors(dds)
+kable(sizeFactors(dds)) %>%
+  kable_styling() %>%
+  scroll_box(width = "300px", height = "520px")
 ```
 
 We will first look at the log transformed data
 
 ```{r}
 slog <- log2(counts(dds, normalized=TRUE)+1)
-head(slog)
+kable(head(slog)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
 ```{r}
@@ -737,7 +753,10 @@ myheatmap2(x-apply(x,1,mean), bar,1000)
 ```{r, message=FALSE}
 dds <- DESeq(dds)
 res <- results(dds, name = "groups_Trp53p_4h7Gy_vs_Trp53m_4h7Gy")
-res
+
+kable(head(res)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 
 ```
 
@@ -753,6 +772,9 @@ Now lets sort genes by fold change
 ```{r}
 res <- res[order(abs( res$log2FoldChange), decreasing=TRUE),]
 head(res)
+kable(head(res)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
 MA Plot
@@ -838,8 +860,13 @@ colnames(annotLookup) <- c(
   "original_id",
   c("ensembl_gene_id", "gene_biotype", "external_gene_name", "entrezgene_id"))
 
-head(annotLookup)
-head(res)
+kable(head(annotLookup)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+
+kable(head(res)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 
 ```
 
@@ -848,7 +875,10 @@ resTemp = as.data.frame(res)
 res.2 = merge(resTemp, annotLookup, by.x = "symbol", by.y= "ensembl_gene_id", all.x=TRUE)
 
 write.csv(res.2, file = "IR_results.csv")
-head(res.2)
+
+kable(head(res.2)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 
 ```
 

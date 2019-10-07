@@ -3674,6 +3674,8 @@ With these, you most certainly will have to step through each and install extra 
 
 ## Analyzing Reads Counts
 
+When the count file is completed, we can import it into R and start working with it to determine differentially expressed genes. First we will import it into R
+
 
 ```r
 library(limma)
@@ -3688,31 +3690,157 @@ This gives us our dataframe from out featureCounts program, but if we look at th
 
 
 ```r
-head(countData)
+kable(head(countData)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "320px")
 ```
 
-```
-## # A tibble: 6 x 18
-##   Geneid Chr   Start End   Strand Length SRR2121770Align~ SRR2121771Align~
-##   <chr>  <chr> <chr> <chr> <chr>   <dbl>            <dbl>            <dbl>
-## 1 ENSMU~ chr1  3073~ 3074~ +        1070                0                0
-## 2 ENSMU~ chr1  3102~ 3102~ +         110                0                0
-## 3 ENSMU~ chr1~ 3205~ 3207~ -;-;-~   6094                0                0
-## 4 ENSMU~ chr1  3252~ 3253~ +         480                0                0
-## 5 ENSMU~ chr1  3365~ 3368~ -        2819                0                0
-## 6 ENSMU~ chr1  3375~ 3377~ -        2233                0                0
-## # ... with 10 more variables:
-## #   SRR2121774Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121775Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121778Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121779Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121780Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121781Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121786Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121787Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121788Aligned.sortedByCoord.out.bam <dbl>,
-## #   SRR2121789Aligned.sortedByCoord.out.bam <dbl>
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:320px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Geneid </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Chr </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Start </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> End </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Strand </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Length </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121770Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121771Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121774Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121775Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121778Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121779Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121780Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121781Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121786Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121787Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121788Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121789Aligned.sortedByCoord.out.bam </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102693.1 </td>
+   <td style="text-align:left;"> chr1 </td>
+   <td style="text-align:left;"> 3073253 </td>
+   <td style="text-align:left;"> 3074322 </td>
+   <td style="text-align:left;"> + </td>
+   <td style="text-align:right;"> 1070 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000064842.1 </td>
+   <td style="text-align:left;"> chr1 </td>
+   <td style="text-align:left;"> 3102016 </td>
+   <td style="text-align:left;"> 3102125 </td>
+   <td style="text-align:left;"> + </td>
+   <td style="text-align:right;"> 110 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000051951.5 </td>
+   <td style="text-align:left;"> chr1;chr1;chr1;chr1;chr1;chr1;chr1 </td>
+   <td style="text-align:left;"> 3205901;3206523;3213439;3213609;3214482;3421702;3670552 </td>
+   <td style="text-align:left;"> 3207317;3207317;3215632;3216344;3216968;3421901;3671498 </td>
+   <td style="text-align:left;"> -;-;-;-;-;-;- </td>
+   <td style="text-align:right;"> 6094 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102851.1 </td>
+   <td style="text-align:left;"> chr1 </td>
+   <td style="text-align:left;"> 3252757 </td>
+   <td style="text-align:left;"> 3253236 </td>
+   <td style="text-align:left;"> + </td>
+   <td style="text-align:right;"> 480 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103377.1 </td>
+   <td style="text-align:left;"> chr1 </td>
+   <td style="text-align:left;"> 3365731 </td>
+   <td style="text-align:left;"> 3368549 </td>
+   <td style="text-align:left;"> - </td>
+   <td style="text-align:right;"> 2819 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000104017.1 </td>
+   <td style="text-align:left;"> chr1 </td>
+   <td style="text-align:left;"> 3375556 </td>
+   <td style="text-align:left;"> 3377788 </td>
+   <td style="text-align:left;"> - </td>
+   <td style="text-align:right;"> 2233 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+</tbody>
+</table></div>
 
 We also need to set out row names to the gene_id. We will do some data frame manipulation and then look at the data again.
 
@@ -3721,95 +3849,122 @@ We also need to set out row names to the gene_id. We will do some data frame man
 countData = as.data.frame(countData)
 rownames(countData) = countData$Geneid
 countData = countData[,-c(1:6)]
-head(countData)
+kable(head(countData)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-##                      SRR2121770Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121771Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121774Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121775Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       4
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       2
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121778Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121779Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121780Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121781Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121786Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       4
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       4
-## ENSMUSG00000102851.1                                       2
-## ENSMUSG00000103377.1                                       6
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121787Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       2
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       2
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                      14
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121788Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-##                      SRR2121789Aligned.sortedByCoord.out.bam
-## ENSMUSG00000102693.1                                       0
-## ENSMUSG00000064842.1                                       0
-## ENSMUSG00000051951.5                                       0
-## ENSMUSG00000102851.1                                       0
-## ENSMUSG00000103377.1                                       0
-## ENSMUSG00000104017.1                                       0
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121770Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121771Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121774Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121775Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121778Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121779Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121780Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121781Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121786Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121787Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121788Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121789Aligned.sortedByCoord.out.bam </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102693.1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000064842.1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000051951.5 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102851.1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103377.1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000104017.1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+</tbody>
+</table></div>
 
 ### Quick Data Exploration
 
@@ -3824,95 +3979,122 @@ dim(countData)
 
 
 ```r
-summary(countData)
+kable(summary(countData)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-##  SRR2121770Aligned.sortedByCoord.out.bam
-##  Min.   :      0.0                      
-##  1st Qu.:      0.0                      
-##  Median :      0.0                      
-##  Mean   :    273.8                      
-##  3rd Qu.:     25.0                      
-##  Max.   :1085454.0                      
-##  SRR2121771Aligned.sortedByCoord.out.bam
-##  Min.   :     0.0                       
-##  1st Qu.:     0.0                       
-##  Median :     0.0                       
-##  Mean   :   235.7                       
-##  3rd Qu.:    20.0                       
-##  Max.   :834016.0                       
-##  SRR2121774Aligned.sortedByCoord.out.bam
-##  Min.   :     0.0                       
-##  1st Qu.:     0.0                       
-##  Median :     0.0                       
-##  Mean   :   229.6                       
-##  3rd Qu.:    15.0                       
-##  Max.   :783768.0                       
-##  SRR2121775Aligned.sortedByCoord.out.bam
-##  Min.   :      0.0                      
-##  1st Qu.:      0.0                      
-##  Median :      0.0                      
-##  Mean   :    269.6                      
-##  3rd Qu.:     24.0                      
-##  Max.   :1032589.0                      
-##  SRR2121778Aligned.sortedByCoord.out.bam
-##  Min.   :      0.0                      
-##  1st Qu.:      0.0                      
-##  Median :      0.0                      
-##  Mean   :    286.6                      
-##  3rd Qu.:     25.0                      
-##  Max.   :1233905.0                      
-##  SRR2121779Aligned.sortedByCoord.out.bam
-##  Min.   :      0.0                      
-##  1st Qu.:      0.0                      
-##  Median :      0.0                      
-##  Mean   :    257.7                      
-##  3rd Qu.:     24.0                      
-##  Max.   :1232421.0                      
-##  SRR2121780Aligned.sortedByCoord.out.bam
-##  Min.   :     0.0                       
-##  1st Qu.:     0.0                       
-##  Median :     0.0                       
-##  Mean   :   193.7                       
-##  3rd Qu.:    17.0                       
-##  Max.   :805463.0                       
-##  SRR2121781Aligned.sortedByCoord.out.bam
-##  Min.   :      0.0                      
-##  1st Qu.:      0.0                      
-##  Median :      0.0                      
-##  Mean   :    268.2                      
-##  3rd Qu.:     26.0                      
-##  Max.   :1210716.0                      
-##  SRR2121786Aligned.sortedByCoord.out.bam
-##  Min.   :     0.0                       
-##  1st Qu.:     0.0                       
-##  Median :     3.0                       
-##  Mean   :   160.2                       
-##  3rd Qu.:    21.0                       
-##  Max.   :641911.0                       
-##  SRR2121787Aligned.sortedByCoord.out.bam
-##  Min.   :     0.0                       
-##  1st Qu.:     0.0                       
-##  Median :     4.0                       
-##  Mean   :   119.4                       
-##  3rd Qu.:    21.0                       
-##  Max.   :516752.0                       
-##  SRR2121788Aligned.sortedByCoord.out.bam
-##  Min.   :     0.0                       
-##  1st Qu.:     0.0                       
-##  Median :     0.0                       
-##  Mean   :   184.3                       
-##  3rd Qu.:    16.0                       
-##  Max.   :706363.0                       
-##  SRR2121789Aligned.sortedByCoord.out.bam
-##  Min.   :     0.0                       
-##  1st Qu.:     0.0                       
-##  Median :     1.0                       
-##  Mean   :   211.1                       
-##  3rd Qu.:    18.0                       
-##  Max.   :756086.0
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121770Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121771Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121774Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121775Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121778Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121779Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121780Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121781Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121786Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121787Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121788Aligned.sortedByCoord.out.bam </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> SRR2121789Aligned.sortedByCoord.out.bam </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Min.   :      0.0 </td>
+   <td style="text-align:left;"> Min.   :     0.0 </td>
+   <td style="text-align:left;"> Min.   :     0.0 </td>
+   <td style="text-align:left;"> Min.   :      0.0 </td>
+   <td style="text-align:left;"> Min.   :      0.0 </td>
+   <td style="text-align:left;"> Min.   :      0.0 </td>
+   <td style="text-align:left;"> Min.   :     0.0 </td>
+   <td style="text-align:left;"> Min.   :      0.0 </td>
+   <td style="text-align:left;"> Min.   :     0.0 </td>
+   <td style="text-align:left;"> Min.   :     0.0 </td>
+   <td style="text-align:left;"> Min.   :     0.0 </td>
+   <td style="text-align:left;"> Min.   :     0.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> 1st Qu.:      0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:     0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:     0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:      0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:      0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:      0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:     0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:      0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:     0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:     0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:     0.0 </td>
+   <td style="text-align:left;"> 1st Qu.:     0.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Median :      0.0 </td>
+   <td style="text-align:left;"> Median :     0.0 </td>
+   <td style="text-align:left;"> Median :     0.0 </td>
+   <td style="text-align:left;"> Median :      0.0 </td>
+   <td style="text-align:left;"> Median :      0.0 </td>
+   <td style="text-align:left;"> Median :      0.0 </td>
+   <td style="text-align:left;"> Median :     0.0 </td>
+   <td style="text-align:left;"> Median :      0.0 </td>
+   <td style="text-align:left;"> Median :     3.0 </td>
+   <td style="text-align:left;"> Median :     4.0 </td>
+   <td style="text-align:left;"> Median :     0.0 </td>
+   <td style="text-align:left;"> Median :     1.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Mean   :    273.8 </td>
+   <td style="text-align:left;"> Mean   :   235.7 </td>
+   <td style="text-align:left;"> Mean   :   229.6 </td>
+   <td style="text-align:left;"> Mean   :    269.6 </td>
+   <td style="text-align:left;"> Mean   :    286.6 </td>
+   <td style="text-align:left;"> Mean   :    257.7 </td>
+   <td style="text-align:left;"> Mean   :   193.7 </td>
+   <td style="text-align:left;"> Mean   :    268.2 </td>
+   <td style="text-align:left;"> Mean   :   160.2 </td>
+   <td style="text-align:left;"> Mean   :   119.4 </td>
+   <td style="text-align:left;"> Mean   :   184.3 </td>
+   <td style="text-align:left;"> Mean   :   211.1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> 3rd Qu.:     25.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:    20.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:    15.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:     24.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:     25.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:     24.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:    17.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:     26.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:    21.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:    21.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:    16.0 </td>
+   <td style="text-align:left;"> 3rd Qu.:    18.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Max.   :1085454.0 </td>
+   <td style="text-align:left;"> Max.   :834016.0 </td>
+   <td style="text-align:left;"> Max.   :783768.0 </td>
+   <td style="text-align:left;"> Max.   :1032589.0 </td>
+   <td style="text-align:left;"> Max.   :1233905.0 </td>
+   <td style="text-align:left;"> Max.   :1232421.0 </td>
+   <td style="text-align:left;"> Max.   :805463.0 </td>
+   <td style="text-align:left;"> Max.   :1210716.0 </td>
+   <td style="text-align:left;"> Max.   :641911.0 </td>
+   <td style="text-align:left;"> Max.   :516752.0 </td>
+   <td style="text-align:left;"> Max.   :706363.0 </td>
+   <td style="text-align:left;"> Max.   :756086.0 </td>
+  </tr>
+</tbody>
+</table></div>
 
 Let's also go ahead and change the names to describe out data a little better.
 
@@ -3926,14 +4108,15 @@ Here we have to make sure that we convert the *+/+* and *-/-* to characters. The
 
 
 ```r
-barplot( colSums(countData)/1e6, col="green",las=3,main="Total read counts (millions)", ylab="Total reads in millions")
+par(mar=c(8,4,4,1)+0.1)
+barplot( colSums(countData)/1e6, col="green",las=3,main="Total read counts (millions)", ylab="Total read counts in millions")
 ```
 
 ![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/unnamed-chunk-35-1.png)<!-- -->
 
 
 ```r
-hist(countData[,1], br=200)
+hist(countData[,1], br=200, xlab="Number of Reads Counts per Feature", main="Histogram of Read Counts for Trp53-/- Mock")
 ```
 
 ![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/unnamed-chunk-36-1.png)<!-- -->
@@ -3943,9 +4126,9 @@ We can see that our count data is highly skewed to the right. This is a great ca
 
 ```r
 logCountData = log2(1+countData)
-par(mfrow = c(1, 2))  # two columns
-hist(logCountData[,1])
-boxplot(logCountData,las=3)
+par(mfrow = c(1, 2), mar=c(8,4,4,1))  # two columns
+hist(logCountData[,1], main="Histogram of Log Read Counts", xlab="Log transformed counts")
+boxplot(logCountData,las=3, main="Boxplot of Log Read Counts")
 ```
 
 ![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/unnamed-chunk-37-1.png)<!-- -->
@@ -3967,7 +4150,7 @@ legend("topright", cex=1.1,colnames(x), lty=rep(1,dim(x)[2]), col=myColors )
 
 
 ```r
-plot(logCountData[,1],logCountData[,2])
+plot(logCountData[,1],logCountData[,2], xlab="Trp53-/- mock replication 1", ylab="Trp53-/- mock replication 2")
 ```
 
 ![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/unnamed-chunk-39-1.png)<!-- -->
@@ -4086,110 +4269,437 @@ Regularized log transformation
 
 ```r
 rld <- rlog(dds, blind = FALSE)
-head(assay(rld), 3)
+kable(head(assay(rld), 6)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-##                      Trp53m_mock_1 Trp53m_mock_2 Trp53m_4h7Gy_1
-## ENSMUSG00000102693.1    -0.7468115    -0.7465790     -0.7462666
-## ENSMUSG00000051951.5    -0.1371545    -0.1368755     -0.1364994
-## ENSMUSG00000103377.1     1.0412975     1.0422670      1.0435633
-##                      Trp53m_4h7Gy_2 Trp53p_mock_1 Trp53p_mock_2
-## ENSMUSG00000102693.1     -0.7467248    -0.7468175    -0.7467610
-## ENSMUSG00000051951.5     -0.0655419    -0.1371616    -0.1370939
-## ENSMUSG00000103377.1      1.0866746     1.0412726     1.0415087
-##                      Trp53p_mock_3 Trp53p_mock_4 Trp53p_4h7Gy_1
-## ENSMUSG00000102693.1    -0.7462584    -0.7468557    -0.62955781
-## ENSMUSG00000051951.5    -0.1364894    -0.1372074    -0.03185913
-## ENSMUSG00000103377.1     1.0435975     1.0411128     1.22758742
-##                      Trp53p_4h7Gy_2 Trp53p_4h7Gy_3 Trp53p_4h7Gy_4
-## ENSMUSG00000102693.1    -0.68345459     -0.7458901     -0.7462950
-## ENSMUSG00000051951.5    -0.06916313     -0.1363120     -0.1365337
-## ENSMUSG00000103377.1     1.49681594      1.0442045      1.0434458
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_mock_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_mock_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_4h7Gy_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_4h7Gy_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_3 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_4 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_3 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_4 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102693.1 </td>
+   <td style="text-align:right;"> -0.7468115 </td>
+   <td style="text-align:right;"> -0.7465790 </td>
+   <td style="text-align:right;"> -0.7462666 </td>
+   <td style="text-align:right;"> -0.7467248 </td>
+   <td style="text-align:right;"> -0.7468175 </td>
+   <td style="text-align:right;"> -0.7467610 </td>
+   <td style="text-align:right;"> -0.7462584 </td>
+   <td style="text-align:right;"> -0.7468557 </td>
+   <td style="text-align:right;"> -0.6295578 </td>
+   <td style="text-align:right;"> -0.6834546 </td>
+   <td style="text-align:right;"> -0.7458901 </td>
+   <td style="text-align:right;"> -0.7462950 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000051951.5 </td>
+   <td style="text-align:right;"> -0.1371545 </td>
+   <td style="text-align:right;"> -0.1368755 </td>
+   <td style="text-align:right;"> -0.1364994 </td>
+   <td style="text-align:right;"> -0.0655419 </td>
+   <td style="text-align:right;"> -0.1371616 </td>
+   <td style="text-align:right;"> -0.1370939 </td>
+   <td style="text-align:right;"> -0.1364894 </td>
+   <td style="text-align:right;"> -0.1372074 </td>
+   <td style="text-align:right;"> -0.0318591 </td>
+   <td style="text-align:right;"> -0.0691631 </td>
+   <td style="text-align:right;"> -0.1363120 </td>
+   <td style="text-align:right;"> -0.1365337 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103377.1 </td>
+   <td style="text-align:right;"> 1.0412975 </td>
+   <td style="text-align:right;"> 1.0422670 </td>
+   <td style="text-align:right;"> 1.0435633 </td>
+   <td style="text-align:right;"> 1.0866746 </td>
+   <td style="text-align:right;"> 1.0412726 </td>
+   <td style="text-align:right;"> 1.0415087 </td>
+   <td style="text-align:right;"> 1.0435975 </td>
+   <td style="text-align:right;"> 1.0411128 </td>
+   <td style="text-align:right;"> 1.2275874 </td>
+   <td style="text-align:right;"> 1.4968159 </td>
+   <td style="text-align:right;"> 1.0442045 </td>
+   <td style="text-align:right;"> 1.0434458 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103201.1 </td>
+   <td style="text-align:right;"> -0.0122293 </td>
+   <td style="text-align:right;"> -0.0119110 </td>
+   <td style="text-align:right;"> -0.0114820 </td>
+   <td style="text-align:right;"> -0.0121107 </td>
+   <td style="text-align:right;"> -0.0122375 </td>
+   <td style="text-align:right;"> -0.0121602 </td>
+   <td style="text-align:right;"> -0.0114707 </td>
+   <td style="text-align:right;"> -0.0122897 </td>
+   <td style="text-align:right;"> 0.0702540 </td>
+   <td style="text-align:right;"> 0.1779894 </td>
+   <td style="text-align:right;"> -0.0112684 </td>
+   <td style="text-align:right;"> -0.0115211 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102592.1 </td>
+   <td style="text-align:right;"> 0.6811085 </td>
+   <td style="text-align:right;"> 0.6817431 </td>
+   <td style="text-align:right;"> 0.6825948 </td>
+   <td style="text-align:right;"> 0.6813453 </td>
+   <td style="text-align:right;"> 0.6810921 </td>
+   <td style="text-align:right;"> 0.6812465 </td>
+   <td style="text-align:right;"> 0.6826173 </td>
+   <td style="text-align:right;"> 0.6809878 </td>
+   <td style="text-align:right;"> 0.9726202 </td>
+   <td style="text-align:right;"> 0.8272066 </td>
+   <td style="text-align:right;"> 0.6830175 </td>
+   <td style="text-align:right;"> 0.7353191 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000025900.12 </td>
+   <td style="text-align:right;"> 1.8016098 </td>
+   <td style="text-align:right;"> 1.7896608 </td>
+   <td style="text-align:right;"> 1.7436985 </td>
+   <td style="text-align:right;"> 1.7407567 </td>
+   <td style="text-align:right;"> 1.7610715 </td>
+   <td style="text-align:right;"> 1.7405234 </td>
+   <td style="text-align:right;"> 1.7437513 </td>
+   <td style="text-align:right;"> 1.8368995 </td>
+   <td style="text-align:right;"> 2.0489057 </td>
+   <td style="text-align:right;"> 2.2376256 </td>
+   <td style="text-align:right;"> 1.7446897 </td>
+   <td style="text-align:right;"> 1.7993294 </td>
+  </tr>
+</tbody>
+</table></div>
 
 Variance Stabilizing Transformation
 
 
 ```r
 vsd <- vst(dds, blind = FALSE)
-head(assay(vsd), 3)
+kable(head(assay(vsd), 6)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-##                      Trp53m_mock_1 Trp53m_mock_2 Trp53m_4h7Gy_1
-## ENSMUSG00000102693.1      6.914084      6.914084       6.914084
-## ENSMUSG00000051951.5      6.914084      6.914084       6.914084
-## ENSMUSG00000103377.1      6.914084      6.914084       6.914084
-##                      Trp53m_4h7Gy_2 Trp53p_mock_1 Trp53p_mock_2
-## ENSMUSG00000102693.1       6.914084      6.914084      6.914084
-## ENSMUSG00000051951.5       7.152884      6.914084      6.914084
-## ENSMUSG00000103377.1       7.083037      6.914084      6.914084
-##                      Trp53p_mock_3 Trp53p_mock_4 Trp53p_4h7Gy_1
-## ENSMUSG00000102693.1      6.914084      6.914084       7.211668
-## ENSMUSG00000051951.5      6.914084      6.914084       7.211668
-## ENSMUSG00000103377.1      6.914084      6.914084       7.278228
-##                      Trp53p_4h7Gy_2 Trp53p_4h7Gy_3 Trp53p_4h7Gy_4
-## ENSMUSG00000102693.1       7.152550       6.914084       6.914084
-## ENSMUSG00000051951.5       7.152550       6.914084       6.914084
-## ENSMUSG00000103377.1       7.540786       6.914084       6.914084
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_mock_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_mock_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_4h7Gy_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_4h7Gy_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_3 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_4 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_3 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_4 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102693.1 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.211668 </td>
+   <td style="text-align:right;"> 7.152550 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000051951.5 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.152884 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.211668 </td>
+   <td style="text-align:right;"> 7.152550 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103377.1 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.083037 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.278228 </td>
+   <td style="text-align:right;"> 7.540786 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103201.1 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.171913 </td>
+   <td style="text-align:right;"> 7.326188 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102592.1 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.406060 </td>
+   <td style="text-align:right;"> 7.250945 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.108447 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000025900.12 </td>
+   <td style="text-align:right;"> 7.114321 </td>
+   <td style="text-align:right;"> 7.091899 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.029486 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.168025 </td>
+   <td style="text-align:right;"> 7.406060 </td>
+   <td style="text-align:right;"> 7.583320 </td>
+   <td style="text-align:right;"> 6.914084 </td>
+   <td style="text-align:right;"> 7.108447 </td>
+  </tr>
+</tbody>
+</table></div>
 
 For the log2 approach, we need to first estimate size factors to account for sequencing depth, and then specify normalized=TRUE. Sequencing depth correction is done automatically for the rlog and the vst.
+
+Size Factor
 
 
 ```r
 dds <- estimateSizeFactors(dds)
-sizeFactors(dds)
+kable(sizeFactors(dds)) %>%
+  kable_styling() %>%
+  scroll_box(width = "300px", height = "520px")
 ```
 
-```
-##  Trp53m_mock_1  Trp53m_mock_2 Trp53m_4h7Gy_1 Trp53m_4h7Gy_2  Trp53p_mock_1 
-##      1.2892566      1.0903014      0.8973654      1.2078255      1.2952327 
-##  Trp53p_mock_2  Trp53p_mock_3  Trp53p_mock_4 Trp53p_4h7Gy_1 Trp53p_4h7Gy_2 
-##      1.2406213      0.8931001      1.3347016      0.7767888      0.6056051 
-## Trp53p_4h7Gy_3 Trp53p_4h7Gy_4 
-##      0.8227361      0.9123249
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:520px; overflow-x: scroll; width:300px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> x </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Trp53m_mock_1 </td>
+   <td style="text-align:right;"> 1.2892566 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53m_mock_2 </td>
+   <td style="text-align:right;"> 1.0903014 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53m_4h7Gy_1 </td>
+   <td style="text-align:right;"> 0.8973654 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53m_4h7Gy_2 </td>
+   <td style="text-align:right;"> 1.2078255 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53p_mock_1 </td>
+   <td style="text-align:right;"> 1.2952327 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53p_mock_2 </td>
+   <td style="text-align:right;"> 1.2406213 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53p_mock_3 </td>
+   <td style="text-align:right;"> 0.8931001 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53p_mock_4 </td>
+   <td style="text-align:right;"> 1.3347016 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53p_4h7Gy_1 </td>
+   <td style="text-align:right;"> 0.7767888 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53p_4h7Gy_2 </td>
+   <td style="text-align:right;"> 0.6056051 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53p_4h7Gy_3 </td>
+   <td style="text-align:right;"> 0.8227361 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trp53p_4h7Gy_4 </td>
+   <td style="text-align:right;"> 0.9123249 </td>
+  </tr>
+</tbody>
+</table></div>
 
 We will first look at the log transformed data
 
 
 ```r
 slog <- log2(counts(dds, normalized=TRUE)+1)
-head(slog)
+kable(head(slog)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-##                       Trp53m_mock_1 Trp53m_mock_2 Trp53m_4h7Gy_1
-## ENSMUSG00000102693.1       0.000000      0.000000              0
-## ENSMUSG00000051951.5       0.000000      0.000000              0
-## ENSMUSG00000103377.1       0.000000      0.000000              0
-## ENSMUSG00000103201.1       0.000000      0.000000              0
-## ENSMUSG00000102592.1       0.000000      0.000000              0
-## ENSMUSG00000025900.12      1.734188      1.503021              0
-##                       Trp53m_4h7Gy_2 Trp53p_mock_1 Trp53p_mock_2
-## ENSMUSG00000102693.1        0.000000     0.0000000             0
-## ENSMUSG00000051951.5        2.108269     0.0000000             0
-## ENSMUSG00000103377.1        1.409184     0.0000000             0
-## ENSMUSG00000103201.1        0.000000     0.0000000             0
-## ENSMUSG00000102592.1        0.000000     0.0000000             0
-## ENSMUSG00000025900.12       0.000000     0.8254291             0
-##                       Trp53p_mock_3 Trp53p_mock_4 Trp53p_4h7Gy_1
-## ENSMUSG00000102693.1              0      0.000000       2.620447
-## ENSMUSG00000051951.5              0      0.000000       2.620447
-## ENSMUSG00000103377.1              0      0.000000       3.125007
-## ENSMUSG00000103201.1              0      0.000000       2.281566
-## ENSMUSG00000102592.1              0      0.000000       3.922280
-## ENSMUSG00000025900.12             0      2.246759       3.922280
-##                       Trp53p_4h7Gy_2 Trp53p_4h7Gy_3 Trp53p_4h7Gy_4
-## ENSMUSG00000102693.1        2.105169              0       0.000000
-## ENSMUSG00000051951.5        2.105169              0       0.000000
-## ENSMUSG00000103377.1        4.592001              0       0.000000
-## ENSMUSG00000103201.1        3.447241              0       0.000000
-## ENSMUSG00000102592.1        2.926941              0       1.674552
-## ENSMUSG00000025900.12       4.777149              0       1.674552
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_mock_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_mock_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_4h7Gy_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53m_4h7Gy_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_3 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_mock_4 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_3 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Trp53p_4h7Gy_4 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102693.1 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 2.620447 </td>
+   <td style="text-align:right;"> 2.105169 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000051951.5 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2.108269 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 2.620447 </td>
+   <td style="text-align:right;"> 2.105169 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103377.1 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1.409184 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 3.125008 </td>
+   <td style="text-align:right;"> 4.592001 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103201.1 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 2.281566 </td>
+   <td style="text-align:right;"> 3.447241 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102592.1 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 3.922280 </td>
+   <td style="text-align:right;"> 2.926941 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1.674552 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000025900.12 </td>
+   <td style="text-align:right;"> 1.734188 </td>
+   <td style="text-align:right;"> 1.503021 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 0.8254291 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2.246759 </td>
+   <td style="text-align:right;"> 3.922280 </td>
+   <td style="text-align:right;"> 4.777149 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1.674552 </td>
+  </tr>
+</tbody>
+</table></div>
 
 
 ```r
@@ -4209,7 +4719,7 @@ plot(slog[,1],slog[,2])
 slog <- log2(counts(dds, normalized=TRUE)+4)
 plot(slog[,1],slog[,2], xlim=c(0,20))
 slog <- log2(counts(dds, normalized=TRUE)+20)
-plot(slog[,1],slog[,2],xlim=c(0,20))
+plot(slog[,1],slog[,2], xlim=c(0,20))
 ```
 
 ![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/unnamed-chunk-50-1.png)<!-- -->
@@ -4312,7 +4822,7 @@ library(gplots)
 hclust2 <- function(x, method="average", ...)  # average linkage in hierarchical clustering
   hclust(x, method=method, ...)
 
-n=50 # number of top genes by standard deviation
+n=100 # number of top genes by standard deviation
 
 x = assay(rld)
 if(n>dim(x)[1]) n = dim(x)[1] # max	as data
@@ -4336,11 +4846,12 @@ groups.colors = rainbow(length(unique(groups) ) )
 	lwid = c(1.5,4)
 	lhei = c(1,.2,4)
 
+
 heatmap.2(x, distfun = dist2,hclustfun=hclust2,
 	 col=greenred(75), density.info="none", trace="none", scale="none", keysize=.5
 	,key=T, symkey=F
 	,ColSideColors=groups.colors[ as.factor(groups)]
-	,margins=c(8,8)
+	,margins=c(8,12)
 	,cexRow=1
 	,srtCol=45
 	,cexCol=1.  # size of font for sample names
@@ -4359,60 +4870,88 @@ K-means clustering of genes
 
 ```r
 dds <- DESeq(dds)
-res <- results(dds)
-res
+res <- results(dds, name = "groups_Trp53p_4h7Gy_vs_Trp53m_4h7Gy")
+
+kable(head(res)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-## log2 fold change (MLE): groups Trp53p mock vs Trp53m 4h7Gy 
-## Wald test p-value: groups Trp53p mock vs Trp53m 4h7Gy 
-## DataFrame with 34139 rows and 6 columns
-##                               baseMean     log2FoldChange            lfcSE
-##                              <numeric>          <numeric>        <numeric>
-## ENSMUSG00000102693.1 0.704323893476708  0.944373860101389 5.04011012102995
-## ENSMUSG00000051951.5 0.980301949412825  -1.93606050718611 4.90304157802561
-## ENSMUSG00000103377.1  2.70811247007369 0.0164654841466683 4.92883452955993
-## ENSMUSG00000103201.1  1.14745830269913   1.21394868463973 5.02701308026115
-## ENSMUSG00000102592.1   1.9131690413215  0.642969613528605 5.02743169014771
-## ...                                ...                ...              ...
-## ENSMUSG00000102053.1   5.4606917322249  -5.79608463544145 3.08302312189078
-## ENSMUSG00000095852.7  5.67546279438922  -5.99404661143399 4.83967404452342
-## ENSMUSG00000100145.1  3.36574617296549  -5.16394977182676  4.3023162124544
-## ENSMUSG00000099405.1  0.94707084987755  -3.02778143921305 4.95303595408583
-## ENSMUSG00000091987.8  1.02158581031203  -2.48887433546013 4.96776834749799
-##                                     stat             pvalue
-##                                <numeric>          <numeric>
-## ENSMUSG00000102693.1   0.187371671932518  0.851369231767202
-## ENSMUSG00000051951.5  -0.394869281929633   0.69293936113219
-## ENSMUSG00000103377.1 0.00334064453734835  0.997334556258204
-## ENSMUSG00000103201.1   0.241485085727421  0.809179174368776
-## ENSMUSG00000102592.1   0.127892262522162  0.898234234374561
-## ...                                  ...                ...
-## ENSMUSG00000102053.1   -1.88000037829323 0.0601080263659187
-## ENSMUSG00000095852.7   -1.23852279229773  0.215522276221424
-## ENSMUSG00000100145.1   -1.20027202019184  0.230033712629537
-## ENSMUSG00000099405.1  -0.611298094195216  0.541002252458883
-## ENSMUSG00000091987.8  -0.501004507731051  0.616367950479261
-##                                   padj
-##                              <numeric>
-## ENSMUSG00000102693.1                NA
-## ENSMUSG00000051951.5                NA
-## ENSMUSG00000103377.1                NA
-## ENSMUSG00000103201.1                NA
-## ENSMUSG00000102592.1                NA
-## ...                                ...
-## ENSMUSG00000102053.1 0.143688035730787
-## ENSMUSG00000095852.7 0.376681084450195
-## ENSMUSG00000100145.1                NA
-## ENSMUSG00000099405.1                NA
-## ENSMUSG00000091987.8                NA
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> baseMean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> log2FoldChange </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> lfcSE </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> pvalue </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> padj </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102693.1 </td>
+   <td style="text-align:right;"> 0.7043239 </td>
+   <td style="text-align:right;"> 3.7351577 </td>
+   <td style="text-align:right;"> 4.967314 </td>
+   <td style="text-align:right;"> 0.7519472 </td>
+   <td style="text-align:right;"> 0.4520828 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000051951.5 </td>
+   <td style="text-align:right;"> 0.9803019 </td>
+   <td style="text-align:right;"> 0.8897316 </td>
+   <td style="text-align:right;"> 4.829651 </td>
+   <td style="text-align:right;"> 0.1842227 </td>
+   <td style="text-align:right;"> 0.8538387 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103377.1 </td>
+   <td style="text-align:right;"> 2.7081125 </td>
+   <td style="text-align:right;"> 3.4929577 </td>
+   <td style="text-align:right;"> 4.867860 </td>
+   <td style="text-align:right;"> 0.7175550 </td>
+   <td style="text-align:right;"> 0.4730317 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000103201.1 </td>
+   <td style="text-align:right;"> 1.1474583 </td>
+   <td style="text-align:right;"> 4.3049975 </td>
+   <td style="text-align:right;"> 4.952550 </td>
+   <td style="text-align:right;"> 0.8692487 </td>
+   <td style="text-align:right;"> 0.3847111 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000102592.1 </td>
+   <td style="text-align:right;"> 1.9131690 </td>
+   <td style="text-align:right;"> 5.1709552 </td>
+   <td style="text-align:right;"> 4.934770 </td>
+   <td style="text-align:right;"> 1.0478615 </td>
+   <td style="text-align:right;"> 0.2947024 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000025900.12 </td>
+   <td style="text-align:right;"> 4.2877013 </td>
+   <td style="text-align:right;"> 6.0685705 </td>
+   <td style="text-align:right;"> 2.646716 </td>
+   <td style="text-align:right;"> 2.2928683 </td>
+   <td style="text-align:right;"> 0.0218556 </td>
+   <td style="text-align:right;"> 0.0827659 </td>
+  </tr>
+</tbody>
+</table></div>
 
 DESeq2 uses the Benjamini-Hochberg (BH) adjustment (Benjamini and Hochberg 1995) as implemented in the base R p.adjust function
 
 
 ```r
-res <- results(dds, alpha = 0.5, lfcThreshold=.01)
+res <- results(dds, alpha = 0.5, lfcThreshold=.01, name = "groups_Trp53p_4h7Gy_vs_Trp53m_4h7Gy")
 summary(res)
 ```
 
@@ -4420,11 +4959,11 @@ summary(res)
 ## 
 ## out of 34139 with nonzero total read count
 ## adjusted p-value < 0.5
-## LFC > 0.01 (up)    : 6203, 18%
-## LFC < -0.01 (down) : 5915, 17%
+## LFC > 0.01 (up)    : 9528, 28%
+## LFC < -0.01 (down) : 5489, 16%
 ## outliers [1]       : 0, 0%
-## low counts [2]     : 11914, 35%
-## (mean count < 3)
+## low counts [2]     : 7281, 21%
+## (mean count < 2)
 ## [1] see 'cooksCutoff' argument of ?results
 ## [2] see 'independentFiltering' argument of ?results
 ```
@@ -4438,26 +4977,110 @@ head(res)
 ```
 
 ```
-## log2 fold change (MLE): groups Trp53p mock vs Trp53m 4h7Gy 
-## Wald test p-value: groups Trp53p mock vs Trp53m 4h7Gy 
+## log2 fold change (MLE): groups Trp53p 4h7Gy vs Trp53m 4h7Gy 
+## Wald test p-value: groups Trp53p 4h7Gy vs Trp53m 4h7Gy 
 ## DataFrame with 6 rows and 6 columns
-##                               baseMean    log2FoldChange            lfcSE
-##                              <numeric>         <numeric>        <numeric>
-## ENSMUSG00000044022.5  1.04775840423632 -22.8083207137305 5.01253450505715
-## ENSMUSG00000045871.5  1.61728198380297 -22.7627770976699 4.12039782777052
-## ENSMUSG00000110839.1 0.865416000692208 -22.6593426505353 4.97255213974549
-## ENSMUSG00000025527.9  1.69240483905238 -22.3509710830054 4.24986810302321
-## ENSMUSG00000104025.1 0.728198191952891 -22.1641354425874 4.88426986117945
-## ENSMUSG00000104283.1 0.728198191952891 -22.1641354425874 4.88426986117945
-##                                   stat               pvalue      padj
-##                              <numeric>            <numeric> <numeric>
-## ENSMUSG00000044022.5 -4.54826209988765 5.40907435855941e-06        NA
-## ENSMUSG00000045871.5 -5.52198550934124 3.35190139219697e-08        NA
-## ENSMUSG00000110839.1 -4.55487283270488 5.24172787416592e-06        NA
-## ENSMUSG00000025527.9 -5.25686222287999 1.46534006583066e-07        NA
-## ENSMUSG00000104025.1 -4.53581314551642 5.73819675582155e-06        NA
-## ENSMUSG00000104283.1 -4.53581314551642 5.73819675582155e-06        NA
+##                               baseMean   log2FoldChange            lfcSE
+##                              <numeric>        <numeric>        <numeric>
+## ENSMUSG00000028402.18 2.44653737620503 19.4780276475443 4.96002492108908
+## ENSMUSG00000109907.1  2.26629142413447 19.4252908971283 4.94715859043128
+## ENSMUSG00000115010.1  4.99032508630205  19.318855984652 4.87080238688941
+## ENSMUSG00000108015.3  1.01923247199608 19.1565639192937 4.93759485396833
+## ENSMUSG00000021280.9  2.97460373976392 19.0525404262345 4.93209971312081
+## ENSMUSG00000110308.1  2.30893395785134 18.9715486627375  4.9601526733748
+##                                   stat               pvalue
+##                              <numeric>            <numeric>
+## ENSMUSG00000028402.18 3.92498585335126 8.67348349856018e-05
+## ENSMUSG00000109907.1   3.9245337585662 8.68978734484021e-05
+## ENSMUSG00000115010.1  3.96420434477593 7.36411522102371e-05
+## ENSMUSG00000108015.3  3.87771060315036 0.000105444038818636
+## ENSMUSG00000021280.9    3.860939870209 0.000112951700377689
+## ENSMUSG00000110308.1  3.82277520700514 0.000131958070009988
+##                                       padj
+##                                  <numeric>
+## ENSMUSG00000028402.18  0.00111781391460811
+## ENSMUSG00000109907.1   0.00111937797845428
+## ENSMUSG00000115010.1  0.000971441093350957
+## ENSMUSG00000108015.3                    NA
+## ENSMUSG00000021280.9   0.00139414373563602
+## ENSMUSG00000110308.1   0.00160295334433661
 ```
+
+```r
+kable(head(res)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> baseMean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> log2FoldChange </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> lfcSE </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> pvalue </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> padj </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000028402.18 </td>
+   <td style="text-align:right;"> 2.446537 </td>
+   <td style="text-align:right;"> 19.47803 </td>
+   <td style="text-align:right;"> 4.960025 </td>
+   <td style="text-align:right;"> 3.924986 </td>
+   <td style="text-align:right;"> 0.0000867 </td>
+   <td style="text-align:right;"> 0.0011178 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000109907.1 </td>
+   <td style="text-align:right;"> 2.266291 </td>
+   <td style="text-align:right;"> 19.42529 </td>
+   <td style="text-align:right;"> 4.947159 </td>
+   <td style="text-align:right;"> 3.924534 </td>
+   <td style="text-align:right;"> 0.0000869 </td>
+   <td style="text-align:right;"> 0.0011194 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000115010.1 </td>
+   <td style="text-align:right;"> 4.990325 </td>
+   <td style="text-align:right;"> 19.31886 </td>
+   <td style="text-align:right;"> 4.870802 </td>
+   <td style="text-align:right;"> 3.964204 </td>
+   <td style="text-align:right;"> 0.0000736 </td>
+   <td style="text-align:right;"> 0.0009714 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000108015.3 </td>
+   <td style="text-align:right;"> 1.019232 </td>
+   <td style="text-align:right;"> 19.15656 </td>
+   <td style="text-align:right;"> 4.937595 </td>
+   <td style="text-align:right;"> 3.877711 </td>
+   <td style="text-align:right;"> 0.0001054 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000021280.9 </td>
+   <td style="text-align:right;"> 2.974604 </td>
+   <td style="text-align:right;"> 19.05254 </td>
+   <td style="text-align:right;"> 4.932100 </td>
+   <td style="text-align:right;"> 3.860940 </td>
+   <td style="text-align:right;"> 0.0001130 </td>
+   <td style="text-align:right;"> 0.0013941 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000110308.1 </td>
+   <td style="text-align:right;"> 2.308934 </td>
+   <td style="text-align:right;"> 18.97155 </td>
+   <td style="text-align:right;"> 4.960153 </td>
+   <td style="text-align:right;"> 3.822775 </td>
+   <td style="text-align:right;"> 0.0001320 </td>
+   <td style="text-align:right;"> 0.0016030 </td>
+  </tr>
+</tbody>
+</table></div>
 
 MA Plot
 
@@ -4486,7 +5109,7 @@ p
 ```
 
 ```
-## Warning: Removed 11914 rows containing missing values (geom_point).
+## Warning: Removed 7281 rows containing missing values (geom_point).
 ```
 
 ![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/unnamed-chunk-59-1.png)<!-- -->
@@ -4513,8 +5136,8 @@ head(row.names(res))
 ```
 
 ```
-## [1] "ENSMUSG00000044022.5" "ENSMUSG00000045871.5" "ENSMUSG00000110839.1"
-## [4] "ENSMUSG00000025527.9" "ENSMUSG00000104025.1" "ENSMUSG00000104283.1"
+## [1] "ENSMUSG00000028402.18" "ENSMUSG00000109907.1"  "ENSMUSG00000115010.1" 
+## [4] "ENSMUSG00000108015.3"  "ENSMUSG00000021280.9"  "ENSMUSG00000110308.1"
 ```
 
 Now we need to find the same key in the Mm database.
@@ -4580,92 +5203,259 @@ colnames(annotLookup) <- c(
   "original_id",
   c("ensembl_gene_id", "gene_biotype", "external_gene_name", "entrezgene_id"))
 
-head(annotLookup)
+kable(head(annotLookup)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-##             original_id    ensembl_gene_id   gene_biotype
-## 1 ENSMUSG00000001366.14 ENSMUSG00000001366 protein_coding
-## 2  ENSMUSG00000002007.5 ENSMUSG00000002007 protein_coding
-## 3  ENSMUSG00000005864.7 ENSMUSG00000005864 protein_coding
-## 4  ENSMUSG00000006651.8 ENSMUSG00000006651 protein_coding
-## 5 ENSMUSG00000010376.15 ENSMUSG00000010376 protein_coding
-## 6  ENSMUSG00000011463.5 ENSMUSG00000011463 protein_coding
-##   external_gene_name entrezgene_id
-## 1              Fbxo9         71538
-## 2              Srpk3         56504
-## 3              Cnga2         12789
-## 4              Aplp1         11803
-## 5              Nedd8         18002
-## 6               Cpb1         76703
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> original_id </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> ensembl_gene_id </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> gene_biotype </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> external_gene_name </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> entrezgene_id </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000002007.5 </td>
+   <td style="text-align:left;"> ENSMUSG00000002007 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Srpk3 </td>
+   <td style="text-align:right;"> 56504 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000005681.12 </td>
+   <td style="text-align:left;"> ENSMUSG00000005681 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Apoa2 </td>
+   <td style="text-align:right;"> 11807 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000005864.7 </td>
+   <td style="text-align:left;"> ENSMUSG00000005864 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Cnga2 </td>
+   <td style="text-align:right;"> 12789 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000006651.8 </td>
+   <td style="text-align:left;"> ENSMUSG00000006651 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Aplp1 </td>
+   <td style="text-align:right;"> 11803 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000010376.15 </td>
+   <td style="text-align:left;"> ENSMUSG00000010376 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Nedd8 </td>
+   <td style="text-align:right;"> 18002 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000011463.5 </td>
+   <td style="text-align:left;"> ENSMUSG00000011463 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Cpb1 </td>
+   <td style="text-align:right;"> 76703 </td>
+  </tr>
+</tbody>
+</table></div>
 
 ```r
-head(res)
+kable(head(res)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-## log2 fold change (MLE): groups Trp53p mock vs Trp53m 4h7Gy 
-## Wald test p-value: groups Trp53p mock vs Trp53m 4h7Gy 
-## DataFrame with 6 rows and 7 columns
-##                               baseMean    log2FoldChange            lfcSE
-##                              <numeric>         <numeric>        <numeric>
-## ENSMUSG00000044022.5  1.04775840423632 -22.8083207137305 5.01253450505715
-## ENSMUSG00000045871.5  1.61728198380297 -22.7627770976699 4.12039782777052
-## ENSMUSG00000110839.1 0.865416000692208 -22.6593426505353 4.97255213974549
-## ENSMUSG00000025527.9  1.69240483905238 -22.3509710830054 4.24986810302321
-## ENSMUSG00000104025.1 0.728198191952891 -22.1641354425874 4.88426986117945
-## ENSMUSG00000104283.1 0.728198191952891 -22.1641354425874 4.88426986117945
-##                                   stat               pvalue      padj
-##                              <numeric>            <numeric> <numeric>
-## ENSMUSG00000044022.5 -4.54826209988765 5.40907435855941e-06        NA
-## ENSMUSG00000045871.5 -5.52198550934124 3.35190139219697e-08        NA
-## ENSMUSG00000110839.1 -4.55487283270488 5.24172787416592e-06        NA
-## ENSMUSG00000025527.9 -5.25686222287999 1.46534006583066e-07        NA
-## ENSMUSG00000104025.1 -4.53581314551642 5.73819675582155e-06        NA
-## ENSMUSG00000104283.1 -4.53581314551642 5.73819675582155e-06        NA
-##                                  symbol
-##                             <character>
-## ENSMUSG00000044022.5 ENSMUSG00000044022
-## ENSMUSG00000045871.5 ENSMUSG00000045871
-## ENSMUSG00000110839.1 ENSMUSG00000110839
-## ENSMUSG00000025527.9 ENSMUSG00000025527
-## ENSMUSG00000104025.1 ENSMUSG00000104025
-## ENSMUSG00000104283.1 ENSMUSG00000104283
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> baseMean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> log2FoldChange </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> lfcSE </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> pvalue </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> padj </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> symbol </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000028402.18 </td>
+   <td style="text-align:right;"> 2.446537 </td>
+   <td style="text-align:right;"> 19.47803 </td>
+   <td style="text-align:right;"> 4.960025 </td>
+   <td style="text-align:right;"> 3.924986 </td>
+   <td style="text-align:right;"> 0.0000867 </td>
+   <td style="text-align:right;"> 0.0011178 </td>
+   <td style="text-align:left;"> ENSMUSG00000028402 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000109907.1 </td>
+   <td style="text-align:right;"> 2.266291 </td>
+   <td style="text-align:right;"> 19.42529 </td>
+   <td style="text-align:right;"> 4.947159 </td>
+   <td style="text-align:right;"> 3.924534 </td>
+   <td style="text-align:right;"> 0.0000869 </td>
+   <td style="text-align:right;"> 0.0011194 </td>
+   <td style="text-align:left;"> ENSMUSG00000109907 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000115010.1 </td>
+   <td style="text-align:right;"> 4.990325 </td>
+   <td style="text-align:right;"> 19.31886 </td>
+   <td style="text-align:right;"> 4.870802 </td>
+   <td style="text-align:right;"> 3.964204 </td>
+   <td style="text-align:right;"> 0.0000736 </td>
+   <td style="text-align:right;"> 0.0009714 </td>
+   <td style="text-align:left;"> ENSMUSG00000115010 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000108015.3 </td>
+   <td style="text-align:right;"> 1.019232 </td>
+   <td style="text-align:right;"> 19.15656 </td>
+   <td style="text-align:right;"> 4.937595 </td>
+   <td style="text-align:right;"> 3.877711 </td>
+   <td style="text-align:right;"> 0.0001054 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:left;"> ENSMUSG00000108015 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000021280.9 </td>
+   <td style="text-align:right;"> 2.974604 </td>
+   <td style="text-align:right;"> 19.05254 </td>
+   <td style="text-align:right;"> 4.932100 </td>
+   <td style="text-align:right;"> 3.860940 </td>
+   <td style="text-align:right;"> 0.0001130 </td>
+   <td style="text-align:right;"> 0.0013941 </td>
+   <td style="text-align:left;"> ENSMUSG00000021280 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000110308.1 </td>
+   <td style="text-align:right;"> 2.308934 </td>
+   <td style="text-align:right;"> 18.97155 </td>
+   <td style="text-align:right;"> 4.960153 </td>
+   <td style="text-align:right;"> 3.822775 </td>
+   <td style="text-align:right;"> 0.0001320 </td>
+   <td style="text-align:right;"> 0.0016030 </td>
+   <td style="text-align:left;"> ENSMUSG00000110308 </td>
+  </tr>
+</tbody>
+</table></div>
 
 
 ```r
 resTemp = as.data.frame(res)
 res.2 = merge(resTemp, annotLookup, by.x = "symbol", by.y= "ensembl_gene_id", all.x=TRUE)
 
-write.csv(res.2, file = "results.csv")
-head(res.2)
+write.csv(res.2, file = "IR_results.csv")
+
+kable(head(res.2)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
 ```
 
-```
-##               symbol   baseMean log2FoldChange     lfcSE       stat
-## 1 ENSMUSG00000000001  22.128060      0.3044189 0.6588361  0.4468773
-## 2 ENSMUSG00000000003   1.518339      2.0359587 3.4948357  0.5797007
-## 3 ENSMUSG00000000028 263.555301     -1.0296405 0.3126001 -3.2618043
-## 4 ENSMUSG00000000031   2.905246      0.7980923 3.3530677  0.2350362
-## 5 ENSMUSG00000000037   2.983225      3.7704963 3.5584777  1.0567711
-## 6 ENSMUSG00000000049   2.482652      0.5360606 2.2102653  0.2380079
-##        pvalue       padj           original_id   gene_biotype
-## 1 0.654963647 0.83874584  ENSMUSG00000000001.4 protein_coding
-## 2 0.562116480         NA ENSMUSG00000000003.15 protein_coding
-## 3 0.001107055 0.00613115 ENSMUSG00000000028.15 protein_coding
-## 4 0.814180627         NA ENSMUSG00000000031.16         lncRNA
-## 5 0.290616087         NA ENSMUSG00000000037.17 protein_coding
-## 6 0.811874960         NA ENSMUSG00000000049.11 protein_coding
-##   external_gene_name entrezgene_id
-## 1              Gnai3         14679
-## 2               Pbsn         54192
-## 3              Cdc45         12544
-## 4                H19            NA
-## 5              Scml2        107815
-## 6               Apoh         11818
-```
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> symbol </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> baseMean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> log2FoldChange </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> lfcSE </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> pvalue </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> padj </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> original_id </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> gene_biotype </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> external_gene_name </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> entrezgene_id </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000000001 </td>
+   <td style="text-align:right;"> 22.128060 </td>
+   <td style="text-align:right;"> 0.5893485 </td>
+   <td style="text-align:right;"> 0.6663668 </td>
+   <td style="text-align:right;"> 0.8694138 </td>
+   <td style="text-align:right;"> 0.3846208 </td>
+   <td style="text-align:right;"> 0.5777164 </td>
+   <td style="text-align:left;"> ENSMUSG00000000001.4 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Gnai3 </td>
+   <td style="text-align:right;"> 14679 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000000003 </td>
+   <td style="text-align:right;"> 1.518339 </td>
+   <td style="text-align:right;"> 2.7877760 </td>
+   <td style="text-align:right;"> 3.4974780 </td>
+   <td style="text-align:right;"> 0.7942226 </td>
+   <td style="text-align:right;"> 0.4270659 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:left;"> ENSMUSG00000000003.15 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Pbsn </td>
+   <td style="text-align:right;"> 54192 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000000028 </td>
+   <td style="text-align:right;"> 263.555301 </td>
+   <td style="text-align:right;"> -1.1974346 </td>
+   <td style="text-align:right;"> 0.3156230 </td>
+   <td style="text-align:right;"> -3.7621924 </td>
+   <td style="text-align:right;"> 0.0001684 </td>
+   <td style="text-align:right;"> 0.0019858 </td>
+   <td style="text-align:left;"> ENSMUSG00000000028.15 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Cdc45 </td>
+   <td style="text-align:right;"> 12544 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000000031 </td>
+   <td style="text-align:right;"> 2.905246 </td>
+   <td style="text-align:right;"> 4.7636255 </td>
+   <td style="text-align:right;"> 3.2841405 </td>
+   <td style="text-align:right;"> 1.4474489 </td>
+   <td style="text-align:right;"> 0.1477712 </td>
+   <td style="text-align:right;"> 0.3577241 </td>
+   <td style="text-align:left;"> ENSMUSG00000000031.16 </td>
+   <td style="text-align:left;"> lncRNA </td>
+   <td style="text-align:left;"> H19 </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000000037 </td>
+   <td style="text-align:right;"> 2.983225 </td>
+   <td style="text-align:right;"> 5.8386436 </td>
+   <td style="text-align:right;"> 3.5432119 </td>
+   <td style="text-align:right;"> 1.6450169 </td>
+   <td style="text-align:right;"> 0.0999663 </td>
+   <td style="text-align:right;"> 0.2829780 </td>
+   <td style="text-align:left;"> ENSMUSG00000000037.17 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Scml2 </td>
+   <td style="text-align:right;"> 107815 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ENSMUSG00000000049 </td>
+   <td style="text-align:right;"> 2.482652 </td>
+   <td style="text-align:right;"> 0.5677648 </td>
+   <td style="text-align:right;"> 2.2309818 </td>
+   <td style="text-align:right;"> 0.2500087 </td>
+   <td style="text-align:right;"> 0.8025806 </td>
+   <td style="text-align:right;"> 0.8881405 </td>
+   <td style="text-align:left;"> ENSMUSG00000000049.11 </td>
+   <td style="text-align:left;"> protein_coding </td>
+   <td style="text-align:left;"> Apoh </td>
+   <td style="text-align:right;"> 11818 </td>
+  </tr>
+</tbody>
+</table></div>
 
 Let's make a file with just the genes with an adjusted p-value < 0.5
 
@@ -4678,26 +5468,26 @@ head(resSig)
 
 ```
 ##                   symbol baseMean log2FoldChange    lfcSE     stat
-## 34210 ENSMUSG00000118465 3.344910       17.47401 2.981323 5.857805
-## 12264 ENSMUSG00000045053 3.614708       13.91114 3.876613 3.585898
-## 3419  ENSMUSG00000022454 3.543100       13.42247 4.011089 3.343847
-## 5308  ENSMUSG00000026705 5.590915       11.85766 3.354682 3.531681
-## 14096 ENSMUSG00000053391 3.306057       10.84705 5.026153 2.156133
-## 9290  ENSMUSG00000035401 5.954097       10.56069 3.251278 3.245091
-##             pvalue         padj           original_id   gene_biotype
-## 34210 4.690250e-09 8.378504e-08  ENSMUSG00000118465.1 protein_coding
-## 12264 3.359204e-04 2.186188e-03  ENSMUSG00000045053.2 protein_coding
-## 3419  8.262539e-04 4.741413e-03 ENSMUSG00000022454.17 protein_coding
-## 5308  4.129276e-04 2.601280e-03 ENSMUSG00000026705.16 protein_coding
-## 14096 3.107329e-02 1.001892e-01  ENSMUSG00000053391.5 protein_coding
-## 9290  1.174131e-03 6.441636e-03  ENSMUSG00000035401.9 protein_coding
+## 6201  ENSMUSG00000028402 2.446537       19.47803 4.960025 3.924986
+## 30020 ENSMUSG00000109907 2.266291       19.42529 4.947159 3.924534
+## 32572 ENSMUSG00000115010 4.990325       19.31886 4.870802 3.964204
+## 2806  ENSMUSG00000021280 2.974604       19.05254 4.932100 3.860940
+## 30203 ENSMUSG00000110308 2.308934       18.97155 4.960153 3.822775
+## 8239  ENSMUSG00000032352 4.537310       18.92539 3.958712 4.778168
+##             pvalue         padj           original_id         gene_biotype
+## 6201  8.673483e-05 1.117814e-03 ENSMUSG00000028402.18       protein_coding
+## 30020 8.689787e-05 1.119378e-03  ENSMUSG00000109907.1               lncRNA
+## 32572 7.364115e-05 9.714411e-04  ENSMUSG00000115010.1 processed_pseudogene
+## 2806  1.129517e-04 1.394144e-03  ENSMUSG00000021280.9       protein_coding
+## 30203 1.319581e-04 1.602953e-03  ENSMUSG00000110308.1                  TEC
+## 8239  1.768995e-06 3.772461e-05 ENSMUSG00000032352.16       protein_coding
 ##       external_gene_name entrezgene_id
-## 34210         CT867961.1     100040448
-## 12264              Kcng3        225030
-## 3419               Nell2         54003
-## 5308              Klhl20        226541
-## 14096            Olfr211        258914
-## 9290                Emsy        233545
+## 6201                Mpdz         17475
+## 30020            Gm45321            NA
+## 32572            Gm20150            NA
+## 2806             Exoc3l4         74190
+## 30203            Gm45516            NA
+## 8239               Lrrc1        214345
 ```
 
 ```r
@@ -4705,11 +5495,11 @@ print(paste("Number of significant genes:", nrow(resSig), sep=" "))
 ```
 
 ```
-## [1] "Number of significant genes: 12145"
+## [1] "Number of significant genes: 15051"
 ```
 
 ```r
-write.csv(resSig,"SigGenes.csv")
+write.csv(resSig,"IR_SigGenes.csv")
 ```
 
 Here is a volcano plot that shows the symbol that we created at each point.
