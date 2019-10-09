@@ -462,6 +462,8 @@ plot(logCountData[,1],logCountData[,2], xlab="Trp53-/- mock replication 1", ylab
 
 ### Filtering, Normalization, and Trasformation using DESeq2
 
+We have to make the experiment design into a small dataframe so we can tell DESeq how we want to analyze the data. Here will will make a small table that has the rep names that we changed the column names to previously, and then a column for which columns are Trp53+/+ or Trp53-/-, and which columns were control mice and which columns were treated with ionizing radiation.
+
 ``` {r }
 detectGroups <- function (x){  # x are col names
   tem <- gsub("[0-9]*$","",x) # Remove all numbers from end
@@ -475,20 +477,21 @@ detectGroups <- function (x){  # x are col names
 
 groups = as.character ( detectGroups( colnames( countData ) ) )
 groups
+p53 = c("m", "m", "m", "m",
+        "p", "p", "p", "p", "p", "p", "p", "p")
+treatment = c("control", "control", "IR", "IR", "control", "control", "control", "control",
+              "IR", "IR", "IR", "IR")
 
 ```
 
 ```{r}
-colData = cbind(colnames(countData), groups )
+colData = cbind(colnames(countData), p53 )
 colData
 
 ```
 
 ```{r}
-colData = as.data.frame(cbind(colnames(countData), groups ))
-sampleID = as.factor( c(1:2,1:2,1:4,1:4) )
-colData = cbind(data.frame(colData),sampleID)
-
+colData = as.data.frame(cbind(colnames(countData), p53, treatment))
 colData
 str(colData)
 ```
@@ -498,19 +501,19 @@ Creating a DESeq Dataset
 ```{r message = FALSE }
 dds = DESeqDataSetFromMatrix(countData=countData,
                              colData=colData,
-                             design= ~ sampleID+groups)   # note that the study design is changed.
+                             design= ~ p53+treatment+p53*treatment)   # note that the study design is changed.
 dds = DESeq(dds)  # main function
 nrow(dds)
 ```
 
-Filtering
+Filtering: we will only keep rows that have a sum count between all samples greater than 5. This will remove most of the genes that mostly have "0" counts.
 
 ```{r}
 dds <- dds[ rowSums(counts(dds)) > 5, ]
 nrow(dds)
 ```
 
-Regularized log transformation
+Regularized log transformation - used for clustering
 
 ```{r}
 rld <- rlog(dds, blind = FALSE)
@@ -520,6 +523,8 @@ kable(head(assay(rld), 6)) %>%
 ```
 
 Variance Stabilizing Transformation
+
+# Interactions cause a difference between the lfc betwen pooled data, e.g. p53+/+ (control and IR) and p53-/- (control and IR)
 
 ```{r}
 vsd <- vst(dds, blind = FALSE)
@@ -555,6 +560,8 @@ plot(assay(rld)[,1],assay(rld)[,2])
 plot(assay(vsd)[,1],assay(vsd)[,2])
 ```
 
+As the log transformation constant increases, the information of the data is lost.
+
 ```{r}
 par(mfrow = c(1, 3))  # 3 columns
 slog <- log2(counts(dds, normalized=TRUE)+1)
@@ -587,7 +594,7 @@ ggplot(df, aes(x = x, y = y)) + geom_hex(bins = 80) +
 PCA plot
 
 ```{r}
-plotPCA(rld, intgroup = c("groups")) + theme(aspect.ratio=1)
+plotPCA(rld, intgroup = c("p53", "treatment")) + theme(aspect.ratio=1)
 ```
 
 A prettier PCA plot created with GGPlot2
@@ -752,7 +759,7 @@ myheatmap2(x-apply(x,1,mean), bar,1000)
 
 ```{r, message=FALSE}
 dds <- DESeq(dds)
-res <- results(dds, name = "groups_Trp53p_4h7Gy_vs_Trp53m_4h7Gy")
+res <- results(dds)
 
 kable(head(res)) %>%
   kable_styling() %>%
@@ -763,7 +770,7 @@ kable(head(res)) %>%
 DESeq2 uses the Benjamini-Hochberg (BH) adjustment (Benjamini and Hochberg 1995) as implemented in the base R p.adjust function
 
 ```{r}
-res <- results(dds, alpha = 0.5, lfcThreshold=.01, name = "groups_Trp53p_4h7Gy_vs_Trp53m_4h7Gy")
+res <- results(dds, alpha = 0.5, lfcThreshold=0.01)
 summary(res)
 ```
 
@@ -778,6 +785,8 @@ kable(head(res)) %>%
 ```
 
 MA Plot
+
+Show the significant genes. The lower the average read counts for all samples and the higher the variation between the samples, the less significant those genes are. 
 
 ```{r}
 DESeq2::plotMA(res,  ylim = c(-5, 5))
@@ -805,7 +814,7 @@ Plot counts of top gene
 
 ```{r}
 topGene <- rownames(res)[1]
-plotCounts(dds, gene = topGene, intgroup=c("groups"))
+plotCounts(dds, gene = topGene, intgroup=c("p53", "treatment"))
 ```
 
 Here we see an interesting point or our normalized counts under the Trp53p_4h7Gy group that seems to be extremely high, while the other 3 replicates are around 0.5. I cannot get this portion to work, however. I get an error stating that None of the keys entered are valid keys for 'SYMBOL'. 
@@ -829,8 +838,13 @@ res$symbol <- gsub("\\..*","", row.names(res))
 ```
 
 ```{r}
+message("Ensembl IDs")
 key.en = keys(org.Mm.eg.db, keytype="ENSEMBL")
 head(key.en)
+cat("\n\n")
+message("SYMBOL names")
+key.sy = keys(org.Mm.eg.db, keytype="SYMBOL")
+head(key.sy)
 ```
 
 These are ENSEMBL symbols, so we need to designate that when looking for the genes that we have. 
@@ -918,7 +932,7 @@ library(ggrepel) # "repels" overlapping text
 p+geom_text_repel(data=filter(res1,  abs(log2FoldChange)>5 | padj < 1e-100 ), aes(label=symbol))
 ```
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 library("ReportingTools")
 htmlRep <- HTMLReport(shortName="report", title="My report",
                       reportDirectory="./report")
@@ -936,13 +950,16 @@ url <- finish(htmlRep)
 
 
 ```{r,echo=FALSE, eval=FALSE}
+#BiocManager::install("EnsDb.Mmusculus.v79")
 library(GO.db)
 library(GOstats)
+library(EnsDb.Mmusculus.v79)
+
 res.3 = subset(res.2, !is.na(res.2$entrezgene_id))
 selectedGenes = unique(resSig[resSig$log2FoldChange>0,'entrezgene_id'])  # upregulated genes
-universeGenes =  unique( mapIds(org.Hs.eg.db,
-                     keys=gsub(" ","",res.3$entrezgene_id),  # this is causing problems for mapping
-                     column="ENTREZID",
+universeGenes =  unique( mapIds(org.Mm.eg.db,
+                     keys=gsub("\\.[0-9]*$","",res.3$entrezgene_id),  # this is causing problems for mapping
+                     column="ENSEMBL",
                      keytype="SYMBOL",
                      multiVals="first")
                     )
@@ -964,13 +981,34 @@ summary(hgOver)[1:10,]
 
 ```
 
+```{r Medicago_trucatula_Database, echo=FALSE, eval=FALSE}
+#BiocManager::install("AnnotationHub")
+library(AnnotationHub)
+hub = AnnotationHub()
+query(hub, c("Medicago", "OrgDb"))
 
+Mt.orgdb = hub[["AH72235"]]
+Mt.orgdb
 
+```
 
+```{r Glycine_max_Database, echo=FALSE, eval=FALSE}
+#BiocManager::install("AnnotationHub")
+library(AnnotationHub)
+query(hub, c("Glycine", "OrgDb"))
 
+Gm.orgdb = hub[["AH72142"]]
+Gm.orgdb
 
+```
 
+```{r, echo=FALSE, eval=FALSE}
+library(AnnotationDbi)
+keytypes(Mt.orgdb)
 
+#key.Gm = keys(Mt.orgdb, keytype="GENENAME")
+#head(key.Gm)
+```
 
 
 
