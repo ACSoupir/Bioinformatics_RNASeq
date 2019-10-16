@@ -4871,10 +4871,6 @@ heatmap.2(x, distfun = dist2,hclustfun=hclust2,
 
 ![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/heatmap-1.png)<!-- -->
 
-K-means clustering of genes
-
-
-
 ### Identification of Differentially Expressed Genes
 
 
@@ -4983,40 +4979,6 @@ Now lets sort genes by fold change
 
 ```r
 res <- res[order(abs( res$log2FoldChange), decreasing=TRUE),]
-head(res)
-```
-
-```
-## log2 fold change (MLE): p53p.treatmentIR 
-## Wald test p-value: p53p.treatmentIR 
-## DataFrame with 6 rows and 6 columns
-##                               baseMean   log2FoldChange            lfcSE
-##                              <numeric>        <numeric>        <numeric>
-## ENSMUSG00000107277.1  178.134530204351 12.8285727631712 1.90677682438359
-## ENSMUSG00000036281.13 17.8982306861319 11.9095280890611 1.99798892241869
-## ENSMUSG00000034189.5  21.3631945992767 11.1919996451755 2.06407707687104
-## ENSMUSG00000111241.1  26.2150732369496 10.9119920219864 1.88579315252597
-## ENSMUSG00000027479.14 4.84461644667725 10.8295738951251 3.26444934042835
-## ENSMUSG00000014932.15 77.8835354123267 10.6541629374156 1.68689096323833
-##                                   stat               pvalue
-##                              <numeric>            <numeric>
-## ENSMUSG00000107277.1  6.72263927233069 1.78462019043921e-11
-## ENSMUSG00000036281.13 5.95575278498342 2.58877410736782e-09
-## ENSMUSG00000034189.5  5.41743318138411 6.04607333379329e-08
-## ENSMUSG00000111241.1  5.78111762012893 7.42059841681869e-09
-## ENSMUSG00000027479.14 3.31436415971626 0.000918517974890568
-## ENSMUSG00000014932.15 6.30992943194264 2.79162727130792e-10
-##                                       padj
-##                                  <numeric>
-## ENSMUSG00000107277.1  2.19053548471651e-09
-## ENSMUSG00000036281.13 2.05260843898161e-07
-## ENSMUSG00000034189.5  3.54041968543753e-06
-## ENSMUSG00000111241.1  5.24806920165645e-07
-## ENSMUSG00000027479.14   0.0130936250234121
-## ENSMUSG00000014932.15 2.79502101426519e-08
-```
-
-```r
 kable(head(res)) %>%
   kable_styling() %>%
   scroll_box(width = "1000px", height = "300px")
@@ -5174,6 +5136,7 @@ columns(org.Mm.eg.db)
 ```r
 #key = gsub("\\..*","", row.names(res))
 res$symbol <- gsub("\\..*","", row.names(res))
+#res$symbol <- gsub(" ","",row.names(res)) 
 ```
 
 
@@ -5220,90 +5183,34 @@ These are ENSEMBL symbols, so we need to designate that when looking for the gen
 
 
 ```r
-library(biomaRt)
-mart = useMart("ENSEMBL_MART_ENSEMBL")
-
-mart = useDataset('mmusculus_gene_ensembl', mart)
-
-ens = row.names(res)
-ensLookup <- gsub("\\.[0-9]*$", "", ens)
-#ensLookup
-
-annotLookup <- getBM(
-  mart=mart,
-  attributes=c("ensembl_gene_id", "gene_biotype", "external_gene_name","entrezgene_id"),
-  filter="ensembl_gene_id",
-  values=ensLookup,
-  uniqueRows=TRUE)
-
-annotLookup <- data.frame(
-  ens[match(annotLookup$ensembl_gene_id, ensLookup)],
-  annotLookup)
-
-colnames(annotLookup) <- c(
-  "original_id",
-  c("ensembl_gene_id", "gene_biotype", "external_gene_name", "entrezgene_id"))
-
-kable(head(annotLookup)) %>%
-  kable_styling() %>%
-  scroll_box(width = "1000px", height = "300px")
+res$ensembl <- gsub("\\..*","", row.names(res))
+res$entrez <- mapIds(org.Mm.eg.db,
+                     keys= res$ensembl,
+                     column="ENTREZID",
+                     keytype="ENSEMBL", #Out ID is ENSMBL
+                     multiVals="first")
 ```
 
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> original_id </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> ensembl_gene_id </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> gene_biotype </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> external_gene_name </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> entrezgene_id </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000002007.5 </td>
-   <td style="text-align:left;"> ENSMUSG00000002007 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Srpk3 </td>
-   <td style="text-align:right;"> 56504 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000003032.8 </td>
-   <td style="text-align:left;"> ENSMUSG00000003032 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Klf4 </td>
-   <td style="text-align:right;"> 16600 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000003355.7 </td>
-   <td style="text-align:left;"> ENSMUSG00000003355 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Fkbp11 </td>
-   <td style="text-align:right;"> 66120 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000003476.16 </td>
-   <td style="text-align:left;"> ENSMUSG00000003476 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Crhr2 </td>
-   <td style="text-align:right;"> 12922 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000003762.13 </td>
-   <td style="text-align:left;"> ENSMUSG00000003762 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Coq8b </td>
-   <td style="text-align:right;"> 76889 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000004056.15 </td>
-   <td style="text-align:left;"> ENSMUSG00000004056 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Akt2 </td>
-   <td style="text-align:right;"> 11652 </td>
-  </tr>
-</tbody>
-</table></div>
+```
+## 'select()' returned 1:many mapping between keys and columns
+```
+
+```r
+res$symbol <- mapIds(org.Mm.eg.db,
+                     keys= res$ensembl,
+                     column="SYMBOL",
+                     keytype="ENSEMBL", #Out ID is ENSMBL
+                     multiVals="first")
+```
+
+```
+## 'select()' returned 1:many mapping between keys and columns
+```
+
+```r
+write.csv(res, file = "results.csv")
+```
+
 
 ```r
 kable(head(res)) %>%
@@ -5322,6 +5229,8 @@ kable(head(res)) %>%
    <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> pvalue </th>
    <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> padj </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> symbol </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> ensembl </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> entrez </th>
   </tr>
  </thead>
 <tbody>
@@ -5333,7 +5242,9 @@ kable(head(res)) %>%
    <td style="text-align:right;"> 6.722639 </td>
    <td style="text-align:right;"> 0.0000000 </td>
    <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> NA </td>
    <td style="text-align:left;"> ENSMUSG00000107277 </td>
+   <td style="text-align:left;"> NA </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ENSMUSG00000036281.13 </td>
@@ -5343,7 +5254,9 @@ kable(head(res)) %>%
    <td style="text-align:right;"> 5.955753 </td>
    <td style="text-align:right;"> 0.0000000 </td>
    <td style="text-align:right;"> 0.0000002 </td>
+   <td style="text-align:left;"> Snapc4 </td>
    <td style="text-align:left;"> ENSMUSG00000036281 </td>
+   <td style="text-align:left;"> 227644 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ENSMUSG00000034189.5 </td>
@@ -5353,7 +5266,9 @@ kable(head(res)) %>%
    <td style="text-align:right;"> 5.417433 </td>
    <td style="text-align:right;"> 0.0000001 </td>
    <td style="text-align:right;"> 0.0000035 </td>
+   <td style="text-align:left;"> Hsdl1 </td>
    <td style="text-align:left;"> ENSMUSG00000034189 </td>
+   <td style="text-align:left;"> 72552 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ENSMUSG00000111241.1 </td>
@@ -5363,7 +5278,9 @@ kable(head(res)) %>%
    <td style="text-align:right;"> 5.781118 </td>
    <td style="text-align:right;"> 0.0000000 </td>
    <td style="text-align:right;"> 0.0000005 </td>
+   <td style="text-align:left;"> NA </td>
    <td style="text-align:left;"> ENSMUSG00000111241 </td>
+   <td style="text-align:left;"> NA </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ENSMUSG00000027479.14 </td>
@@ -5373,7 +5290,9 @@ kable(head(res)) %>%
    <td style="text-align:right;"> 3.314364 </td>
    <td style="text-align:right;"> 0.0009185 </td>
    <td style="text-align:right;"> 0.0130936 </td>
+   <td style="text-align:left;"> Mapre1 </td>
    <td style="text-align:left;"> ENSMUSG00000027479 </td>
+   <td style="text-align:left;"> 13589 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ENSMUSG00000014932.15 </td>
@@ -5383,117 +5302,9 @@ kable(head(res)) %>%
    <td style="text-align:right;"> 6.309929 </td>
    <td style="text-align:right;"> 0.0000000 </td>
    <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Yes1 </td>
    <td style="text-align:left;"> ENSMUSG00000014932 </td>
-  </tr>
-</tbody>
-</table></div>
-
-
-```r
-resTemp = as.data.frame(res)
-res.2 = merge(resTemp, annotLookup, by.x = "symbol", by.y= "ensembl_gene_id", all.x=TRUE)
-
-write.csv(res.2, file = "IR_results.csv")
-
-kable(head(res.2)) %>%
-  kable_styling() %>%
-  scroll_box(width = "1000px", height = "300px")
-```
-
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> symbol </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> baseMean </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> log2FoldChange </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> lfcSE </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> pvalue </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> padj </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> original_id </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> gene_biotype </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> external_gene_name </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> entrezgene_id </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000000001 </td>
-   <td style="text-align:right;"> 22.128060 </td>
-   <td style="text-align:right;"> 0.6088274 </td>
-   <td style="text-align:right;"> 0.7190923 </td>
-   <td style="text-align:right;"> 0.8327546 </td>
-   <td style="text-align:right;"> 0.4049831 </td>
-   <td style="text-align:right;"> 0.6901825 </td>
-   <td style="text-align:left;"> ENSMUSG00000000001.4 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Gnai3 </td>
-   <td style="text-align:right;"> 14679 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000000003 </td>
-   <td style="text-align:right;"> 1.518339 </td>
-   <td style="text-align:right;"> -0.3071294 </td>
-   <td style="text-align:right;"> 3.9896706 </td>
-   <td style="text-align:right;"> -0.0744747 </td>
-   <td style="text-align:right;"> 0.9406327 </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:left;"> ENSMUSG00000000003.15 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Pbsn </td>
-   <td style="text-align:right;"> 54192 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000000028 </td>
-   <td style="text-align:right;"> 263.555301 </td>
-   <td style="text-align:right;"> -1.8772682 </td>
-   <td style="text-align:right;"> 0.4173688 </td>
-   <td style="text-align:right;"> -4.4739045 </td>
-   <td style="text-align:right;"> 0.0000077 </td>
-   <td style="text-align:right;"> 0.0002470 </td>
-   <td style="text-align:left;"> ENSMUSG00000000028.15 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Cdc45 </td>
-   <td style="text-align:right;"> 12544 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000000031 </td>
-   <td style="text-align:right;"> 2.905246 </td>
-   <td style="text-align:right;"> 2.5207724 </td>
-   <td style="text-align:right;"> 3.7951608 </td>
-   <td style="text-align:right;"> 0.6615721 </td>
-   <td style="text-align:right;"> 0.5082455 </td>
-   <td style="text-align:right;"> 0.7563103 </td>
-   <td style="text-align:left;"> ENSMUSG00000000031.16 </td>
-   <td style="text-align:left;"> lncRNA </td>
-   <td style="text-align:left;"> H19 </td>
-   <td style="text-align:right;"> NA </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000000037 </td>
-   <td style="text-align:right;"> 2.983225 </td>
-   <td style="text-align:right;"> 5.0649293 </td>
-   <td style="text-align:right;"> 4.1674422 </td>
-   <td style="text-align:right;"> 1.2129573 </td>
-   <td style="text-align:right;"> 0.2251461 </td>
-   <td style="text-align:right;"> 0.5366583 </td>
-   <td style="text-align:left;"> ENSMUSG00000000037.17 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Scml2 </td>
-   <td style="text-align:right;"> 107815 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ENSMUSG00000000049 </td>
-   <td style="text-align:right;"> 2.482652 </td>
-   <td style="text-align:right;"> 0.5837222 </td>
-   <td style="text-align:right;"> 2.4683475 </td>
-   <td style="text-align:right;"> 0.2324317 </td>
-   <td style="text-align:right;"> 0.8162027 </td>
-   <td style="text-align:right;"> 0.9300813 </td>
-   <td style="text-align:left;"> ENSMUSG00000000049.11 </td>
-   <td style="text-align:left;"> protein_coding </td>
-   <td style="text-align:left;"> Apoh </td>
-   <td style="text-align:right;"> 11818 </td>
+   <td style="text-align:left;"> 22612 </td>
   </tr>
 </tbody>
 </table></div>
@@ -5502,45 +5313,37 @@ Let's make a file with just the genes with an adjusted p-value < 0.5
 
 
 ```r
-resSig = as.data.frame(subset(res.2,padj<0.5) )
+resSig = as.data.frame(subset(res,padj<0.5) )
 resSig = resSig[order(resSig$log2FoldChange,decreasing=TRUE),]
 head(resSig)
 ```
 
 ```
-##                   symbol   baseMean log2FoldChange    lfcSE     stat
-## 28709 ENSMUSG00000107277 178.134530       12.82857 1.906777 6.722639
-## 9538  ENSMUSG00000036281  17.898231       11.90953 1.997989 5.955753
-## 8886  ENSMUSG00000034189  21.363195       11.19200 2.064077 5.417433
-## 30670 ENSMUSG00000111241  26.215073       10.91199 1.885793 5.781118
-## 5718  ENSMUSG00000027479   4.844616       10.82957 3.264449 3.314364
-## 1410  ENSMUSG00000014932  77.883535       10.65416 1.686891 6.309929
-##             pvalue         padj           original_id
-## 28709 1.784620e-11 2.190535e-09  ENSMUSG00000107277.1
-## 9538  2.588774e-09 2.052608e-07 ENSMUSG00000036281.13
-## 8886  6.046073e-08 3.540420e-06  ENSMUSG00000034189.5
-## 30670 7.420598e-09 5.248069e-07  ENSMUSG00000111241.1
-## 5718  9.185180e-04 1.309363e-02 ENSMUSG00000027479.14
-## 1410  2.791627e-10 2.795021e-08 ENSMUSG00000014932.15
-##                 gene_biotype external_gene_name entrezgene_id
-## 28709                    TEC            Gm10461            NA
-## 9538          protein_coding             Snapc4        227644
-## 8886          protein_coding              Hsdl1         72552
-## 30670 unprocessed_pseudogene            Gm19121            NA
-## 5718          protein_coding             Mapre1         13589
-## 1410          protein_coding               Yes1         22612
+##                         baseMean log2FoldChange    lfcSE     stat
+## ENSMUSG00000107277.1  178.134530       12.82857 1.906777 6.722639
+## ENSMUSG00000036281.13  17.898231       11.90953 1.997989 5.955753
+## ENSMUSG00000034189.5   21.363195       11.19200 2.064077 5.417433
+## ENSMUSG00000111241.1   26.215073       10.91199 1.885793 5.781118
+## ENSMUSG00000027479.14   4.844616       10.82957 3.264449 3.314364
+## ENSMUSG00000014932.15  77.883535       10.65416 1.686891 6.309929
+##                             pvalue         padj symbol            ensembl
+## ENSMUSG00000107277.1  1.784620e-11 2.190535e-09   <NA> ENSMUSG00000107277
+## ENSMUSG00000036281.13 2.588774e-09 2.052608e-07 Snapc4 ENSMUSG00000036281
+## ENSMUSG00000034189.5  6.046073e-08 3.540420e-06  Hsdl1 ENSMUSG00000034189
+## ENSMUSG00000111241.1  7.420598e-09 5.248069e-07   <NA> ENSMUSG00000111241
+## ENSMUSG00000027479.14 9.185180e-04 1.309363e-02 Mapre1 ENSMUSG00000027479
+## ENSMUSG00000014932.15 2.791627e-10 2.795021e-08   Yes1 ENSMUSG00000014932
+##                       entrez
+## ENSMUSG00000107277.1    <NA>
+## ENSMUSG00000036281.13 227644
+## ENSMUSG00000034189.5   72552
+## ENSMUSG00000111241.1    <NA>
+## ENSMUSG00000027479.14  13589
+## ENSMUSG00000014932.15  22612
 ```
 
 ```r
-print(paste("Number of significant genes:", nrow(resSig), sep=" "))
-```
-
-```
-## [1] "Number of significant genes: 9909"
-```
-
-```r
-write.csv(resSig,"IR_SigGenes.csv")
+write.csv(resSig,"SigGenes.csv")
 ```
 
 Here is a volcano plot that shows the symbol that we created at each point.
@@ -5548,30 +5351,822 @@ Here is a volcano plot that shows the symbol that we created at each point.
 
 ```r
 library(dplyr)
-res1 = as.data.frame(subset(res.2, !is.na(res.2$padj)))
+res1 = as.data.frame(res)
 # add a new column using the mutate function in dplyr
 res1 = mutate(res1, sig=ifelse(res1$padj<0.5, "FDR<0.05", "Not Sig"))
 res1[which(abs(res1$log2FoldChange)<1),'sig'] <- "Not Sig"
 p = ggplot(res1, aes(log2FoldChange, -log10(pvalue))) +
   geom_point(aes(col=sig)) +
   scale_color_manual(values=c("red", "black"))
-p+geom_text(data=filter(res1, padj<0.05), aes(label=symbol))
+p+geom_text(data=filter(res1, padj<1e-50), aes(label=symbol))
+```
+
+```
+## Warning: Removed 7357 rows containing missing values (geom_point).
 ```
 
 ![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/unnamed-chunk-67-1.png)<!-- -->
 
 
-```r
-library(dplyr)
-# Install ggrepel package if needed
-# install.packages("devtools")
-# devtools::install_github("slowkow/ggrepel")
-library(ggrepel) # "repels" overlapping text
 
-p+geom_text_repel(data=filter(res1,  abs(log2FoldChange)>5 | padj < 1e-100 ), aes(label=symbol))
+
+
+# 7. GO Enrichment analysis using GOstats
+
+Here we will do a GO Enrichment analysis for genes that have a decreased fold-change of 5 or more
+
+
+```r
+library(GO.db)
+library(GOstats)
+selectedGenes = unique(resSig[resSig$log2FoldChange>5,'entrez'])  # upregulated genes
+universeGenes =  unique( mapIds(org.Mm.eg.db,
+                     keys= res$ensembl,
+                     column="ENTREZID",
+                     keytype="ENSEMBL", #Out ID is ENSMBL
+                     multiVals="first")
+                    )
+
+
+ hgCutoff <- 0.001
+ params <- new("GOHyperGParams",
+     geneIds=selectedGenes,
+     universeGeneIds=universeGenes,
+     annotation="org.Mm.eg.db",
+     ontology="BP",
+     pvalueCutoff=hgCutoff,
+     conditional=FALSE,
+     testDirection="over")
+
+hgOver <- hyperGTest(params)
+summary(hgOver)[1:10,]
 ```
 
-![](Mouse_RNA_Seq_p53_genotoxic_files/figure-html/unnamed-chunk-68-1.png)<!-- -->
+```
+##        GOBPID       Pvalue OddsRatio   ExpCount Count Size
+## 1  GO:0019236 2.643566e-07  5.062236   4.423515    18   78
+## 2  GO:0016049 1.730359e-05  2.028026  26.144107    49  461
+## 3  GO:0048588 2.580339e-05  2.442482  13.951085    31  246
+## 4  GO:1990138 3.035698e-05  2.725414  10.208111    25  180
+## 5  GO:0050789 3.546769e-05  1.302786 562.863914   624 9925
+## 6  GO:0001558 5.334949e-05  2.045100  22.174286    42  391
+## 7  GO:0032879 5.962358e-05  1.395721 147.223650   191 2596
+## 8  GO:0060560 1.073049e-04  2.275476  14.348068    30  253
+## 9  GO:0061564 1.204488e-04  1.884894  26.711225    47  471
+## 10 GO:0050794 1.250445e-04  1.272536 527.135525   584 9295
+##                                              Term
+## 1                           response to pheromone
+## 2                                     cell growth
+## 3                       developmental cell growth
+## 4                     neuron projection extension
+## 5                regulation of biological process
+## 6                       regulation of cell growth
+## 7                      regulation of localization
+## 8  developmental growth involved in morphogenesis
+## 9                                axon development
+## 10                 regulation of cellular process
+```
+
+
+```r
+summary(hgOver)[1:10,c("GOBPID","Pvalue","Term")]
+```
+
+```
+##        GOBPID       Pvalue                                           Term
+## 1  GO:0019236 2.643566e-07                          response to pheromone
+## 2  GO:0016049 1.730359e-05                                    cell growth
+## 3  GO:0048588 2.580339e-05                      developmental cell growth
+## 4  GO:1990138 3.035698e-05                    neuron projection extension
+## 5  GO:0050789 3.546769e-05               regulation of biological process
+## 6  GO:0001558 5.334949e-05                      regulation of cell growth
+## 7  GO:0032879 5.962358e-05                     regulation of localization
+## 8  GO:0060560 1.073049e-04 developmental growth involved in morphogenesis
+## 9  GO:0061564 1.204488e-04                               axon development
+## 10 GO:0050794 1.250445e-04                 regulation of cellular process
+```
+
+
+
+```r
+params1 <- params
+ontology(params1) <- "CC"
+hgOver <- hyperGTest(params1)
+summary(hgOver)[1:10,c("GOCCID","Pvalue","Term")]
+```
+
+```
+##        GOCCID       Pvalue                                        Term
+## 1  GO:0031226 2.194852e-10      intrinsic component of plasma membrane
+## 2  GO:0005887 2.497976e-10       integral component of plasma membrane
+## 3  GO:0030424 3.300807e-07                                        axon
+## 4  GO:0098978 7.089583e-07                       glutamatergic synapse
+## 5  GO:0033267 1.725126e-06                                   axon part
+## 6  GO:0044459 1.872288e-06                        plasma membrane part
+## 7  GO:0099055 3.042517e-06 integral component of postsynaptic membrane
+## 8  GO:0099699 4.152767e-06     integral component of synaptic membrane
+## 9  GO:0045211 6.111879e-06                       postsynaptic membrane
+## 10 GO:0016021 7.169574e-06              integral component of membrane
+```
+
+
+```r
+params1 <- params
+ontology(params1) <- "MF"
+hgOver <- hyperGTest(params1)
+summary(hgOver)[1:10,c("GOMFID","Pvalue","Term")]
+```
+
+```
+##        GOMFID       Pvalue                                         Term
+## 1  GO:0016503 4.685420e-07                  pheromone receptor activity
+## 2  GO:0005550 1.234794e-05                            pheromone binding
+## 3  GO:0005549 2.293309e-05                              odorant binding
+## 4  GO:0004888 3.280256e-05    transmembrane signaling receptor activity
+## 5  GO:0038023 5.222020e-05                  signaling receptor activity
+## 6  GO:0060089 8.100909e-05                molecular transducer activity
+## 7  GO:0005488 6.931421e-04                                      binding
+## 8  GO:0015267 8.237763e-04                             channel activity
+## 9  GO:0022803 8.237763e-04   passive transmembrane transporter activity
+## 10 GO:0046873 8.631819e-04 metal ion transmembrane transporter activity
+```
+
+## GO Enrichment analysis  of downregulated genes
+
+Next we will have a look at the genes that are upregulated by a fold-change of 5 or greater. 
+
+
+```r
+selectedGenes = unique(resSig[resSig$log2FoldChange<5,'entrez'])  # upregulated genes
+
+ params <- new("GOHyperGParams",
+     geneIds=selectedGenes,
+     universeGeneIds=universeGenes,
+     annotation="org.Mm.eg.db",
+     ontology="BP",
+     pvalueCutoff=hgCutoff,
+     conditional=FALSE,
+     testDirection="over")
+
+hgOver <- hyperGTest(params)
+summary(hgOver)[1:10,c("GOBPID","Pvalue","Term")]
+```
+
+```
+##        GOBPID       Pvalue                                          Term
+## 1  GO:0016043 9.317561e-12               cellular component organization
+## 2  GO:0008152 1.757957e-11                             metabolic process
+## 3  GO:0071840 4.299006e-11 cellular component organization or biogenesis
+## 4  GO:0044237 7.869800e-11                    cellular metabolic process
+## 5  GO:0044238 1.013489e-09                     primary metabolic process
+## 6  GO:0006807 1.956109e-09           nitrogen compound metabolic process
+## 7  GO:0071704 2.363963e-09           organic substance metabolic process
+## 8  GO:0006996 2.779804e-09                        organelle organization
+## 9  GO:0033036 1.835538e-08                    macromolecule localization
+## 10 GO:0051179 2.179269e-08                                  localization
+```
+
+# 8. Pathway analysis using expression data
+
+
+```r
+# bioconductor packages
+# source("https://bioconductor.org/biocLite.R");
+# biocLite(c("pathview","gage","gageData"))
+library(pathview) 
+library(gage) 
+```
+
+## Prepare data
+
+
+```r
+foldchanges = res$log2FoldChange
+names(foldchanges) = res$entrez
+head(foldchanges)
+```
+
+```
+##     <NA>   227644    72552     <NA>    13589    22612 
+## 12.82857 11.90953 11.19200 10.91199 10.82957 10.65416
+```
+
+
+```r
+library(gageData)
+data(go.sets.mm)
+data(go.subs.mm)
+gobpsets = go.sets.mm[go.subs.mm$BP]
+gobpres = gage(foldchanges, gsets=gobpsets, same.dir=TRUE)
+#lapply(gobpres, head)
+message("Greater")
+```
+
+```
+## Greater
+```
+
+```r
+kable(head(gobpres$greater)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> p.geomean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat.mean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> p.val </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> q.val </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> set.size </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> exp1 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> GO:0019236 response to pheromone </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 7.637046 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0007420 brain development </td>
+   <td style="text-align:right;"> 0.0012778 </td>
+   <td style="text-align:right;"> 3.026272 </td>
+   <td style="text-align:right;"> 0.0012778 </td>
+   <td style="text-align:right;"> 0.7925518 </td>
+   <td style="text-align:right;"> 400 </td>
+   <td style="text-align:right;"> 0.0012778 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0045664 regulation of neuron differentiation </td>
+   <td style="text-align:right;"> 0.0021154 </td>
+   <td style="text-align:right;"> 2.869812 </td>
+   <td style="text-align:right;"> 0.0021154 </td>
+   <td style="text-align:right;"> 0.7925518 </td>
+   <td style="text-align:right;"> 355 </td>
+   <td style="text-align:right;"> 0.0021154 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0007156 homophilic cell adhesion </td>
+   <td style="text-align:right;"> 0.0023079 </td>
+   <td style="text-align:right;"> 2.879945 </td>
+   <td style="text-align:right;"> 0.0023079 </td>
+   <td style="text-align:right;"> 0.7925518 </td>
+   <td style="text-align:right;"> 70 </td>
+   <td style="text-align:right;"> 0.0023079 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0001944 vasculature development </td>
+   <td style="text-align:right;"> 0.0030643 </td>
+   <td style="text-align:right;"> 2.746850 </td>
+   <td style="text-align:right;"> 0.0030643 </td>
+   <td style="text-align:right;"> 0.7925518 </td>
+   <td style="text-align:right;"> 487 </td>
+   <td style="text-align:right;"> 0.0030643 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0033555 multicellular organismal response to stress </td>
+   <td style="text-align:right;"> 0.0038427 </td>
+   <td style="text-align:right;"> 2.719970 </td>
+   <td style="text-align:right;"> 0.0038427 </td>
+   <td style="text-align:right;"> 0.7925518 </td>
+   <td style="text-align:right;"> 53 </td>
+   <td style="text-align:right;"> 0.0038427 </td>
+  </tr>
+</tbody>
+</table></div>
+
+```r
+message("Less")
+```
+
+```
+## Less
+```
+
+```r
+kable(head(gobpres$less)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> p.geomean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat.mean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> p.val </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> q.val </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> set.size </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> exp1 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> GO:0007283 spermatogenesis </td>
+   <td style="text-align:right;"> 0.0094832 </td>
+   <td style="text-align:right;"> -2.352919 </td>
+   <td style="text-align:right;"> 0.0094832 </td>
+   <td style="text-align:right;"> 0.992104 </td>
+   <td style="text-align:right;"> 292 </td>
+   <td style="text-align:right;"> 0.0094832 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0048232 male gamete generation </td>
+   <td style="text-align:right;"> 0.0100757 </td>
+   <td style="text-align:right;"> -2.330049 </td>
+   <td style="text-align:right;"> 0.0100757 </td>
+   <td style="text-align:right;"> 0.992104 </td>
+   <td style="text-align:right;"> 293 </td>
+   <td style="text-align:right;"> 0.0100757 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0007266 Rho protein signal transduction </td>
+   <td style="text-align:right;"> 0.0180131 </td>
+   <td style="text-align:right;"> -2.109476 </td>
+   <td style="text-align:right;"> 0.0180131 </td>
+   <td style="text-align:right;"> 0.992104 </td>
+   <td style="text-align:right;"> 117 </td>
+   <td style="text-align:right;"> 0.0180131 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0007094 mitotic cell cycle spindle assembly checkpoint </td>
+   <td style="text-align:right;"> 0.0263331 </td>
+   <td style="text-align:right;"> -2.065183 </td>
+   <td style="text-align:right;"> 0.0263331 </td>
+   <td style="text-align:right;"> 0.992104 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 0.0263331 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0016441 posttranscriptional gene silencing </td>
+   <td style="text-align:right;"> 0.0274536 </td>
+   <td style="text-align:right;"> -1.957280 </td>
+   <td style="text-align:right;"> 0.0274536 </td>
+   <td style="text-align:right;"> 0.992104 </td>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:right;"> 0.0274536 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0007276 gamete generation </td>
+   <td style="text-align:right;"> 0.0283921 </td>
+   <td style="text-align:right;"> -1.907876 </td>
+   <td style="text-align:right;"> 0.0283921 </td>
+   <td style="text-align:right;"> 0.992104 </td>
+   <td style="text-align:right;"> 388 </td>
+   <td style="text-align:right;"> 0.0283921 </td>
+  </tr>
+</tbody>
+</table></div>
+
+```r
+message("Stats")
+```
+
+```
+## Stats
+```
+
+```r
+kable(head(gobpres$stats)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat.mean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> exp1 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> GO:0019236 response to pheromone </td>
+   <td style="text-align:right;"> 7.637046 </td>
+   <td style="text-align:right;"> 7.637046 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0007420 brain development </td>
+   <td style="text-align:right;"> 3.026272 </td>
+   <td style="text-align:right;"> 3.026272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0045664 regulation of neuron differentiation </td>
+   <td style="text-align:right;"> 2.869812 </td>
+   <td style="text-align:right;"> 2.869812 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0007156 homophilic cell adhesion </td>
+   <td style="text-align:right;"> 2.879945 </td>
+   <td style="text-align:right;"> 2.879945 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0001944 vasculature development </td>
+   <td style="text-align:right;"> 2.746850 </td>
+   <td style="text-align:right;"> 2.746850 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GO:0033555 multicellular organismal response to stress </td>
+   <td style="text-align:right;"> 2.719970 </td>
+   <td style="text-align:right;"> 2.719970 </td>
+  </tr>
+</tbody>
+</table></div>
+
+## KEGG pathways
+
+
+```r
+library(gageData)
+data(kegg.sets.mm)
+data(sigmet.idx.mm)
+kegg.sets.mm = kegg.sets.mm[sigmet.idx.mm]
+#head(kegg.sets.mm, 3)
+
+message("Greater")
+```
+
+```
+## Greater
+```
+
+```r
+kable(head(kegg.sets.mm$greater)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+<tbody>
+  <tr>
+
+  </tr>
+</tbody>
+</table></div>
+
+```r
+message("Less")
+```
+
+```
+## Less
+```
+
+```r
+kable(head(kegg.sets.mm$less)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+<tbody>
+  <tr>
+
+  </tr>
+</tbody>
+</table></div>
+
+```r
+message("Stats")
+```
+
+```
+## Stats
+```
+
+```r
+kable(head(kegg.sets.mm$stats)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+<tbody>
+  <tr>
+
+  </tr>
+</tbody>
+</table></div>
+
+```r
+# Get the results
+keggres = gage(foldchanges, gsets=kegg.sets.mm, same.dir=TRUE)
+
+# Look at both up (greater), down (less), and statatistics.
+#lapply(keggres, head, n=10)
+message("Greater")
+```
+
+```
+## Greater
+```
+
+```r
+kable(head(keggres$greater)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> p.geomean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat.mean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> p.val </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> q.val </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> set.size </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> exp1 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> mmu04360 Axon guidance </td>
+   <td style="text-align:right;"> 0.0285970 </td>
+   <td style="text-align:right;"> 1.910570 </td>
+   <td style="text-align:right;"> 0.0285970 </td>
+   <td style="text-align:right;"> 0.8131848 </td>
+   <td style="text-align:right;"> 128 </td>
+   <td style="text-align:right;"> 0.0285970 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu03410 Base excision repair </td>
+   <td style="text-align:right;"> 0.0355168 </td>
+   <td style="text-align:right;"> 1.842982 </td>
+   <td style="text-align:right;"> 0.0355168 </td>
+   <td style="text-align:right;"> 0.8131848 </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 0.0355168 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu00591 Linoleic acid metabolism </td>
+   <td style="text-align:right;"> 0.0537749 </td>
+   <td style="text-align:right;"> 1.628039 </td>
+   <td style="text-align:right;"> 0.0537749 </td>
+   <td style="text-align:right;"> 0.8131848 </td>
+   <td style="text-align:right;"> 40 </td>
+   <td style="text-align:right;"> 0.0537749 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu04974 Protein digestion and absorption </td>
+   <td style="text-align:right;"> 0.0596166 </td>
+   <td style="text-align:right;"> 1.567001 </td>
+   <td style="text-align:right;"> 0.0596166 </td>
+   <td style="text-align:right;"> 0.8131848 </td>
+   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;"> 0.0596166 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu01040 Biosynthesis of unsaturated fatty acids </td>
+   <td style="text-align:right;"> 0.0662476 </td>
+   <td style="text-align:right;"> 1.531834 </td>
+   <td style="text-align:right;"> 0.0662476 </td>
+   <td style="text-align:right;"> 0.8131848 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 0.0662476 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu03022 Basal transcription factors </td>
+   <td style="text-align:right;"> 0.0674085 </td>
+   <td style="text-align:right;"> 1.514546 </td>
+   <td style="text-align:right;"> 0.0674085 </td>
+   <td style="text-align:right;"> 0.8131848 </td>
+   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:right;"> 0.0674085 </td>
+  </tr>
+</tbody>
+</table></div>
+
+```r
+message("Less")
+```
+
+```
+## Less
+```
+
+```r
+kable(head(keggres$less)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> p.geomean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat.mean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> p.val </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> q.val </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> set.size </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> exp1 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> mmu03020 RNA polymerase </td>
+   <td style="text-align:right;"> 0.0095316 </td>
+   <td style="text-align:right;"> -2.445444 </td>
+   <td style="text-align:right;"> 0.0095316 </td>
+   <td style="text-align:right;"> 0.9111323 </td>
+   <td style="text-align:right;"> 23 </td>
+   <td style="text-align:right;"> 0.0095316 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu03450 Non-homologous end-joining </td>
+   <td style="text-align:right;"> 0.0341877 </td>
+   <td style="text-align:right;"> -1.999438 </td>
+   <td style="text-align:right;"> 0.0341877 </td>
+   <td style="text-align:right;"> 0.9111323 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.0341877 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu00190 Oxidative phosphorylation </td>
+   <td style="text-align:right;"> 0.0669600 </td>
+   <td style="text-align:right;"> -1.505167 </td>
+   <td style="text-align:right;"> 0.0669600 </td>
+   <td style="text-align:right;"> 0.9111323 </td>
+   <td style="text-align:right;"> 99 </td>
+   <td style="text-align:right;"> 0.0669600 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu03420 Nucleotide excision repair </td>
+   <td style="text-align:right;"> 0.0747360 </td>
+   <td style="text-align:right;"> -1.456591 </td>
+   <td style="text-align:right;"> 0.0747360 </td>
+   <td style="text-align:right;"> 0.9111323 </td>
+   <td style="text-align:right;"> 39 </td>
+   <td style="text-align:right;"> 0.0747360 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu00563 Glycosylphosphatidylinositol(GPI)-anchor biosynthesis </td>
+   <td style="text-align:right;"> 0.0757982 </td>
+   <td style="text-align:right;"> -1.464592 </td>
+   <td style="text-align:right;"> 0.0757982 </td>
+   <td style="text-align:right;"> 0.9111323 </td>
+   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:right;"> 0.0757982 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu00240 Pyrimidine metabolism </td>
+   <td style="text-align:right;"> 0.1116636 </td>
+   <td style="text-align:right;"> -1.222140 </td>
+   <td style="text-align:right;"> 0.1116636 </td>
+   <td style="text-align:right;"> 0.9111323 </td>
+   <td style="text-align:right;"> 87 </td>
+   <td style="text-align:right;"> 0.1116636 </td>
+  </tr>
+</tbody>
+</table></div>
+
+```r
+message("Stats")
+```
+
+```
+## Stats
+```
+
+```r
+kable(head(keggres$stats)) %>%
+  kable_styling() %>%
+  scroll_box(width = "1000px", height = "300px")
+```
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:1000px; "><table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> stat.mean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> exp1 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> mmu04360 Axon guidance </td>
+   <td style="text-align:right;"> 1.910570 </td>
+   <td style="text-align:right;"> 1.910570 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu03410 Base excision repair </td>
+   <td style="text-align:right;"> 1.842982 </td>
+   <td style="text-align:right;"> 1.842982 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu00591 Linoleic acid metabolism </td>
+   <td style="text-align:right;"> 1.628039 </td>
+   <td style="text-align:right;"> 1.628039 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu04974 Protein digestion and absorption </td>
+   <td style="text-align:right;"> 1.567001 </td>
+   <td style="text-align:right;"> 1.567001 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu01040 Biosynthesis of unsaturated fatty acids </td>
+   <td style="text-align:right;"> 1.531834 </td>
+   <td style="text-align:right;"> 1.531834 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mmu03022 Basal transcription factors </td>
+   <td style="text-align:right;"> 1.514546 </td>
+   <td style="text-align:right;"> 1.514546 </td>
+  </tr>
+</tbody>
+</table></div>
+
+
+```r
+# Get the pathways
+keggrespathways = data.frame(id=rownames(keggres$less), keggres$less) %>% 
+  tbl_df() %>% 
+  filter(row_number()<=5) %>% 
+  .$id %>% 
+  as.character()
+keggrespathways
+```
+
+```
+## [1] "mmu03020 RNA polymerase"                                       
+## [2] "mmu03450 Non-homologous end-joining"                           
+## [3] "mmu00190 Oxidative phosphorylation"                            
+## [4] "mmu03420 Nucleotide excision repair"                           
+## [5] "mmu00563 Glycosylphosphatidylinositol(GPI)-anchor biosynthesis"
+```
+
+
+```r
+# Get the IDs.
+keggresids = substr(keggrespathways, start=1, stop=8)
+keggresids
+```
+
+```
+## [1] "mmu03020" "mmu03450" "mmu00190" "mmu03420" "mmu00563"
+```
+
+
+```r
+# Define plotting function for applying later
+plot_pathway = function(pid) pathview(gene.data=foldchanges, pathway.id=pid, species="mmu", new.signature=FALSE)
+
+# plot multiple pathways (plots saved to disk and returns a throwaway list object)
+tmp = sapply(keggresids, function(pid) pathview(gene.data=foldchanges, pathway.id=pid, species="mmu"))
+```
+
+## Pathway and regulation of genes for Oxidative phosphorylation.
+
+![Oxidative Phosphorylation](./Mouse_RNA_Seq_p53_genotoxic_files/figure-html/mmu00190.pathview.png)
+
+## Pathway and regulation of genes for Glycosylphosphatidylinositol(GPI)-anchor biosynthesis.
+
+![Glycosylphosphatidylinositol(GPI)-anchor biosynthesis](./Mouse_RNA_Seq_p53_genotoxic_files/figure-html/mmu00563.pathview.png)
+
+## Pathway and regulation of genes for RNA polymerase.
+
+![RNA polymerase](./Mouse_RNA_Seq_p53_genotoxic_files/figure-html/mmu03020.pathview.png)
+
+## Pathway and regulation of genes for Nucleotide excision repair.
+
+![Nucleotide excision repair](./Mouse_RNA_Seq_p53_genotoxic_files/figure-html/mmu03420.pathview.png)
+
+## Pathway and regulation of genes for Non-homologous end-joining.
+
+![Non-homologous end-joining](./Mouse_RNA_Seq_p53_genotoxic_files/figure-html/mmu03450.pathview.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
