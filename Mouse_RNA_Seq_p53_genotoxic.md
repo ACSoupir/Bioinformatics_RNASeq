@@ -41,12 +41,19 @@ The mice were exposed to whole-body ionizing radiation and sequences were extrac
    <td style="text-align:left;"> IR </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Group 5 </td>
+   <td style="text-align:left;"> Group 4 </td>
    <td style="text-align:left;"> C57/Bl6 </td>
    <td style="text-align:left;"> IR </td>
   </tr>
 </tbody>
 </table>
+
+This document will contain 2 different pipelines: The first one is going to be using the genome to map the reads too, and the secod is going to be *de novo*.
+
+[Genome](#genome-mapping)
+[*De novo*](#denovo-assembly)
+
+#Genome Mapping {#genome-mapping}
 
 The pipeline used in this analysis used **conda** on South Dakota State University's High Performance Computing cluster to run the programs **FastQC**, **Trimmomatic**, and **Tophat**. 
 
@@ -4176,9 +4183,9 @@ groups
 ```
 
 ```
-##  [1] "Trp53m_mock"  "Trp53m_mock"  "Trp53m_4h7Gy" "Trp53m_4h7Gy"
-##  [5] "Trp53p_mock"  "Trp53p_mock"  "Trp53p_mock"  "Trp53p_mock" 
-##  [9] "Trp53p_4h7Gy" "Trp53p_4h7Gy" "Trp53p_4h7Gy" "Trp53p_4h7Gy"
+##  [1] "Trp53m_mock"  "Trp53m_mock"  "Trp53m_4h7Gy" "Trp53m_4h7Gy" "Trp53p_mock" 
+##  [6] "Trp53p_mock"  "Trp53p_mock"  "Trp53p_mock"  "Trp53p_4h7Gy" "Trp53p_4h7Gy"
+## [11] "Trp53p_4h7Gy" "Trp53p_4h7Gy"
 ```
 
 ```r
@@ -5125,11 +5132,10 @@ columns(org.Mm.eg.db)
 ```
 
 ```
-##  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT" 
-##  [5] "ENSEMBLTRANS" "ENTREZID"     "ENZYME"       "EVIDENCE"    
-##  [9] "EVIDENCEALL"  "GENENAME"     "GO"           "GOALL"       
-## [13] "IPI"          "MGI"          "ONTOLOGY"     "ONTOLOGYALL" 
-## [17] "PATH"         "PFAM"         "PMID"         "PROSITE"     
+##  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT"  "ENSEMBLTRANS"
+##  [6] "ENTREZID"     "ENZYME"       "EVIDENCE"     "EVIDENCEALL"  "GENENAME"    
+## [11] "GO"           "GOALL"        "IPI"          "MGI"          "ONTOLOGY"    
+## [16] "ONTOLOGYALL"  "PATH"         "PFAM"         "PMID"         "PROSITE"     
 ## [21] "REFSEQ"       "SYMBOL"       "UNIGENE"      "UNIPROT"
 ```
 
@@ -5319,27 +5325,20 @@ head(resSig)
 ```
 
 ```
-##                         baseMean log2FoldChange    lfcSE     stat
-## ENSMUSG00000107277.1  178.134530       12.82857 1.906777 6.722639
-## ENSMUSG00000036281.13  17.898231       11.90953 1.997989 5.955753
-## ENSMUSG00000034189.5   21.363195       11.19200 2.064077 5.417433
-## ENSMUSG00000111241.1   26.215073       10.91199 1.885793 5.781118
-## ENSMUSG00000027479.14   4.844616       10.82957 3.264449 3.314364
-## ENSMUSG00000014932.15  77.883535       10.65416 1.686891 6.309929
-##                             pvalue         padj symbol            ensembl
-## ENSMUSG00000107277.1  1.784620e-11 2.190535e-09   <NA> ENSMUSG00000107277
-## ENSMUSG00000036281.13 2.588774e-09 2.052608e-07 Snapc4 ENSMUSG00000036281
-## ENSMUSG00000034189.5  6.046073e-08 3.540420e-06  Hsdl1 ENSMUSG00000034189
-## ENSMUSG00000111241.1  7.420598e-09 5.248069e-07   <NA> ENSMUSG00000111241
-## ENSMUSG00000027479.14 9.185180e-04 1.309363e-02 Mapre1 ENSMUSG00000027479
-## ENSMUSG00000014932.15 2.791627e-10 2.795021e-08   Yes1 ENSMUSG00000014932
-##                       entrez
-## ENSMUSG00000107277.1    <NA>
-## ENSMUSG00000036281.13 227644
-## ENSMUSG00000034189.5   72552
-## ENSMUSG00000111241.1    <NA>
-## ENSMUSG00000027479.14  13589
-## ENSMUSG00000014932.15  22612
+##                         baseMean log2FoldChange    lfcSE     stat       pvalue
+## ENSMUSG00000107277.1  178.134530       12.82857 1.906777 6.722639 1.784620e-11
+## ENSMUSG00000036281.13  17.898231       11.90953 1.997989 5.955753 2.588774e-09
+## ENSMUSG00000034189.5   21.363195       11.19200 2.064077 5.417433 6.046073e-08
+## ENSMUSG00000111241.1   26.215073       10.91199 1.885793 5.781118 7.420598e-09
+## ENSMUSG00000027479.14   4.844616       10.82957 3.264449 3.314364 9.185180e-04
+## ENSMUSG00000014932.15  77.883535       10.65416 1.686891 6.309929 2.791627e-10
+##                               padj symbol            ensembl entrez
+## ENSMUSG00000107277.1  2.190535e-09   <NA> ENSMUSG00000107277   <NA>
+## ENSMUSG00000036281.13 2.052608e-07 Snapc4 ENSMUSG00000036281 227644
+## ENSMUSG00000034189.5  3.540420e-06  Hsdl1 ENSMUSG00000034189  72552
+## ENSMUSG00000111241.1  5.248069e-07   <NA> ENSMUSG00000111241   <NA>
+## ENSMUSG00000027479.14 1.309363e-02 Mapre1 ENSMUSG00000027479  13589
+## ENSMUSG00000014932.15 2.795021e-08   Yes1 ENSMUSG00000014932  22612
 ```
 
 ```r
@@ -6146,13 +6145,257 @@ tmp = sapply(keggresids, function(pid) pathview(gene.data=foldchanges, pathway.i
 ![Non-homologous end-joining](./Mouse_RNA_Seq_p53_genotoxic_files/figure-html/mmu03450.pathview.png)
 
 
+#De novo Assembly {#denovo-assembly}
+
+*AT THIS TIME, MINICONDA3 WAS INSTALLED SO FURTHER TOOLS ARE ALL INSTALLED UNDER THIS*
+
+Having the genome for RNA-sequencing analysis is very useful, but sometimes it is not available so *de novo* assembly is used. *de novo* assembly is using the reads from sequencing to create longer seqeunces called contigs (contiguous sequences). These sequences are then compared to a protein database to get an idea of what proteins are possibly present. The raw sequences are also mapped back to the contigs, treating the contigs as the "genome", much like we do when we have the genome from the host available.
+
+Lets jump right into it. We are going to be using [Trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki) for the *de novo* assembly and analysis because there are many tools built into the Trinity tool that allow for the building of contigs, counting of sequences, and even DeSeq/edgeR analyses.
+
+To install Trinity, all I did was ran **conda install -c bioconda trinity**. This installs all of the previously mentioned tools in one go. In addition to Trinity, BLAST (**conda install -c bioconda blast**) and RSEM (**conda install -c bioconda rsem**) were installed.
 
 
+```bash
+Trinity --seqType fq \
+--left trimmedReads/SRR2121770_Trimmed_1P.fq.gz,trimmedReads/SRR2121771_Trimmed_1P.fq.gz,trimmedReads/SRR2121774_Trimmed_1P.fq.gz,trimmedReads/SRR2121775_Trimmed_1P.fq.gz,trimmedReads/SRR2121778_Trimmed_1P.fq.gz,trimmedReads/SRR2121779_Trimmed_1P.fq.gz,trimmedReads/SRR2121780_Trimmed_1P.fq.gz,trimmedReads/SRR2121781_Trimmed_1P.fq.gz,trimmedReads/SRR2121786_Trimmed_1P.fq.gz,trimmedReads/SRR2121787_Trimmed_1P.fq.gz,trimmedReads/SRR2121788_Trimmed_1P.fq.gz,trimmedReads/SRR2121789_Trimmed_1P.fq.gz \
+--right trimmedReads/SRR2121770_Trimmed_2P.fq.gz,trimmedReads/SRR2121771_Trimmed_2P.fq.gz,trimmedReads/SRR2121774_Trimmed_2P.fq.gz,trimmedReads/SRR2121775_Trimmed_2P.fq.gz,trimmedReads/SRR2121778_Trimmed_2P.fq.gz,trimmedReads/SRR2121779_Trimmed_2P.fq.gz,trimmedReads/SRR2121780_Trimmed_2P.fq.gz,trimmedReads/SRR2121781_Trimmed_2P.fq.gz,trimmedReads/SRR2121786_Trimmed_2P.fq.gz,trimmedReads/SRR2121787_Trimmed_2P.fq.gz,trimmedReads/SRR2121788_Trimmed_2P.fq.gz,trimmedReads/SRR2121789_Trimmed_2P.fq.gz \
+--CPU 80 --max_memory 2000G --min_contig_length 150
+```
 
 
+```bash
+TrinityStats.pl trinity_out_dir/Trinity.fasta
+
+################################
+## Counts of transcripts, etc.
+################################
+Total trinity 'genes':  602870
+Total trinity transcripts:      730297
+Percent GC: 45.89
+
+########################################
+Stats based on ALL transcript contigs:
+########################################
+
+        Contig N10: 8589
+        Contig N20: 5955
+        Contig N30: 4400
+        Contig N40: 3276
+        Contig N50: 2413
+
+        Median contig length: 413
+        Average contig: 1028.24
+        Total assembled bases: 750921120
 
 
+#####################################################
+## Stats based on ONLY LONGEST ISOFORM per 'GENE':
+#####################################################
 
+        Contig N10: 5470
+        Contig N20: 3434
+        Contig N30: 2391
+        Contig N40: 1741
+        Contig N50: 1285
+
+        Median contig length: 343
+        Average contig: 703.04
+        Total assembled bases: 423841627
+```
+
+
+```bash
+bowtie2-build trinity_out_dir/Trinity.fasta trinity_out_dir/Trinity.fasta
+bowtie2 --local --no-unal -x trinity_out
+```
+
+#download uniprot swiss-prot db
+#ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
+
+
+```bash
+gunzip uniprot_sprot.fasta.gz
+mkdir -p blast_protdb
+mv uniprot_sprot.fasta blast_protdb/.
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+cd ..
+```
+
+
+```bash
+blastx -query trinity_out_dir/Trinity.fasta -db blast_protdb/uniprot_sprot.fasta -out blastx.outfmt6 -evalue 1e-20 -num_threads 80 -max_target_seqs 1 -outfmt 6
+analyze_blastPlus_topHit_coverage.pl blastx.outfmt6 trinity_out_dir/Trinity.fasta blast_protdb/uniprot_sprot.fasta | column -t
+
+#hit_pct_cov_bin  count_in_bin  >bin_below
+100               7361          7361
+90                1117          8478
+80                981           9459
+70                971           10430
+60                1003          11433
+50                865           12298
+40                924           13222
+30                1102          14324
+20                1478          15802
+10                932           16734
+```
+
+
+```bash
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121770_1.fastq.gz -2 rawReads/SRR2121770_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121770.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121771_1.fastq.gz -2 rawReads/SRR2121771_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121771.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121774_1.fastq.gz -2 rawReads/SRR2121774_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121774.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121775_1.fastq.gz -2 rawReads/SRR2121775_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121775.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121778_1.fastq.gz -2 rawReads/SRR2121778_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121778.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121779_1.fastq.gz -2 rawReads/SRR2121779_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121779.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121780_1.fastq.gz -2 rawReads/SRR2121780_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121780.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121781_1.fastq.gz -2 rawReads/SRR2121781_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121781.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121786_1.fastq.gz -2 rawReads/SRR2121786_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121786.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121787_1.fastq.gz -2 rawReads/SRR2121787_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121787.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121788_1.fastq.gz -2 rawReads/SRR2121788_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121788.coordSorted.bam
+$ bowtie2 --local --no-unal -x trinity_out_dir/Trinity.fasta -q -1 rawReads/SRR2121789_1.fastq.gz -2 rawReads/SRR2121789_2.fastq.gz --threads 10 | samtools view --threads 10 -Sb - | samtools sort --threads 10 -o SRR2121789.coordSorted.bam
+```
+
+
+```bash
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121770_1.fastq.gz --right rawReads/SRR2121770_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121770.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121771_1.fastq.gz --right rawReads/SRR2121771_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121771.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121774_1.fastq.gz --right rawReads/SRR2121774_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121774.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121775_1.fastq.gz --right rawReads/SRR2121775_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121775.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121778_1.fastq.gz --right rawReads/SRR2121778_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121778.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121779_1.fastq.gz --right rawReads/SRR2121779_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121779.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121780_1.fastq.gz --right rawReads/SRR2121780_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121780.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121781_1.fastq.gz --right rawReads/SRR2121781_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121781.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121786_1.fastq.gz --right rawReads/SRR2121786_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121786.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121787_1.fastq.gz --right rawReads/SRR2121787_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121787.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121788_1.fastq.gz --right rawReads/SRR2121788_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121788.RSEM
+$ time align_and_estimate_abundance.pl --seqType fq --thread_count $SLURM_NTASKS --left rawReads/SRR2121789_1.fastq.gz --right rawReads/SRR2121789_2.fastq.gz --transcripts trinity_out_dir/Trinity.fasta --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir SRR2121789.RSEM
+```
+
+
+```bash
+time abundance_estimates_to_matrix.pl --est_method RSEM --out_prefix Trinity_trans SRR2121770.RSEM/SRR2121770.RSEM.trans.results \
+SRR2121771.RSEM/SRR2121771.RSEM.trans.results \
+SRR2121774.RSEM/SRR2121774.RSEM.trans.results \
+SRR2121775.RSEM/SRR2121775.RSEM.trans.results \
+SRR2121778.RSEM/SRR2121778.RSEM.trans.results \
+SRR2121779.RSEM/SRR2121779.RSEM.trans.results \
+SRR2121780.RSEM/SRR2121780.RSEM.trans.results \
+SRR2121781.RSEM/SRR2121781.RSEM.trans.results \
+SRR2121786.RSEM/SRR2121786.RSEM.trans.results \
+SRR2121787.RSEM/SRR2121787.RSEM.trans.results \
+SRR2121788.RSEM/SRR2121788.RSEM.trans.results \
+SRR2121789.RSEM/SRR2121789.RSEM.trans.results --gene_trans_map none
+```
+
+
+```bash
+time abundance_estimates_to_matrix.pl --est_method RSEM --out_prefix Trinity_genes SRR2121770.RSEM/SRR2121770.RSEM.genes.results \
+SRR2121771.RSEM/SRR2121771.RSEM.genes.results \
+SRR2121774.RSEM/SRR2121774.RSEM.genes.results \
+SRR2121775.RSEM/SRR2121775.RSEM.genes.results \
+SRR2121778.RSEM/SRR2121778.RSEM.genes.results \
+SRR2121779.RSEM/SRR2121779.RSEM.genes.results \
+SRR2121780.RSEM/SRR2121780.RSEM.genes.results \
+SRR2121781.RSEM/SRR2121781.RSEM.genes.results \
+SRR2121786.RSEM/SRR2121786.RSEM.genes.results \
+SRR2121787.RSEM/SRR2121787.RSEM.genes.results \
+SRR2121788.RSEM/SRR2121788.RSEM.genes.results \
+SRR2121789.RSEM/SRR2121789.RSEM.genes.results --gene_trans_map none
+```
+
+
+```bash
+contig_Exn50_statistic.pl Trinity_trans.TMM.EXPR.matrix trinity_out_dir/Trinity.fasta > ExN50_trans.stats
+```
+
+Make samples.txt
+
+
+```bash
+mock-	SRR2121770.RSEM
+mock-	SRR2121771.RSEM
+IR-	SRR2121774.RSEM
+IR-	SRR2121775.RSEM
+mock+	SRR2121778.RSEM
+mock+	SRR2121779.RSEM
+mock+	SRR2121780.RSEM
+mock+	SRR2121781.RSEM
+IR+	SRR2121786.RSEM
+IR+	SRR2121787.RSEM
+IR+	SRR2121788.RSEM
+IR+	SRR2121789.RSEM
+```
+
+The way that the installed version of *run_DE_analysis.pl* tries to install or check for edgeR doesn't work for the new versions of R (3.6.1). In the perl script I just had to edit a few lines under the edgeR section for it to run smoothly, as well as install *BiocManager before hand.
+
+I changed the perl script, under *sub run_edgeR_sample_pair*, when writing the R script to look like:
+
+
+```perl
+    print $ofh "if (! require(edgeR)) {\n";
+    print $ofh "   install.packages(\"BiocManager\")\n";
+    print $ofh "   BiocManager::install(\"edgeR\")\n";
+    print $ofh "   library(edgeR)\n";
+    print $ofh "}\n\n";
+```
+
+To make sure BiocManager and edgeR work, they were installed in the R terminal.
+
+
+```r
+R #runs the installed version of R in terminal mode
+install.packages("BiocManager")
+BiocManager::install("edgeR")
+```
+
+Since we don't have at least 3 replicates for each of the treatments, edgeR wants a dispersion parameter. 0.035 seems to be pretty common. If the dispersion parameter has the squareroot taken of it we get ~ 0.19, meaning that we are saying the true abundance for each gene can vary up or down by 19% between replicates.
+
+
+```bash
+run_DE_analysis.pl --matrix Trinity_trans.counts.matrix --method edgeR --output edgeR_trans --dispersion 0.035 --samples_file samples.txt
+```
+
+
+```bash
+head edgeR_trans/Trinity_trans.counts.matrix.IR-_vs_mock-.edgeR.DE_results | column -t
+
+                          sampleA  sampleB  logFC           logCPM             PValue                FDR
+TRINITY_DN2468_c0_g4_i1   IR-      mock-  -14.7753615825754  4.45315041918     5.51021995613131e-115  5.85185359341145e-110
+TRINITY_DN2505_c0_g1_i2   IR-      mock-  -10.1817621187735  4.11815268306374  8.54695600746168e-88   4.53843363996215e-83
+TRINITY_DN3231_c0_g2_i15  IR-      mock-  -13.5922145319911  3.27307743751541  6.29068575237937e-81   2.2269027563423e-76
+TRINITY_DN4975_c0_g1_i7   IR-      mock-  13.4941229058571   3.17132827495398  5.25978730838885e-79   1.39647353037724e-74
+TRINITY_DN4360_c0_g1_i5   IR-      mock-  -13.5215746751431  3.20272600532575  1.0222845072488e-70    2.17133229339645e-66
+TRINITY_DN128_c0_g1_i20   IR-      mock-  13.1582688371709   2.83599676163376  1.8443766792831e-69    3.26454672233108e-65
+TRINITY_DN644_c1_g1_i6    IR-      mock-  -5.91850038396836  4.31456225100214  8.01440426808572e-67   1.21589961895815e-62
+TRINITY_DN2043_c0_g1_i13  IR-      mock-  13.7803059024088   3.45719012794474  3.30519380237759e-66   4.38764477265625e-62
+TRINITY_DN3321_c0_g1_i2   IR-      mock-  12.8215942182179   2.49995284585527  9.5059376972195e-61    1.1217006482719e-56
+```
+
+
+```bash
+
+```
+
+
+```bash
+
+```
+
+
+```bash
+
+```
+
+
+```bash
+
+```
+
+
+```bash
+
+```
 
 
 
